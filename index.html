@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-family: monospace;
+            font-size: 1.875rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: monospace;
+            text-transform: uppercase;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .projects {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .project {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1rem;
+            margin: 0 -1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .project:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .project::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .project:hover::after {
+            opacity: 1;
+        }
+
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .project-name {
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        .project-description {
+            color: #a3a3a3;
+            font-size: 0.875rem;
+        }
+
+        .project-year {
+            color: #a3a3a3;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            margin-left: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .project {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .project-year {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">DANIEL KUNTZ</h1>
+        
+        <section>
+            <h2 class="section-title">Software</h2>
+            
+            <div class="projects">
+                <div class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">Rabbit Holes</h3>
+                        <p class="project-description">Experimental graph interface for steering Spotify's music recommendation algorithm.</p>
+                    </div>
+                    <div class="project-year">2024</div>
+                </div>
+
+                <div class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">creator vault</h3>
+                        <p class="project-description">Platform for professional content creators to anonymously rate brands.</p>
+                    </div>
+                    <div class="project-year">2024</div>
+                </div>
+
+                <div class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">crunchy tomatoes</h3>
+                        <p class="project-description">Menu scanner app that tells you what to order based on your preferences.</p>
+                    </div>
+                    <div class="project-year">2024</div>
+                </div>
+
+                <div class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">BlueNote</h3>
+                        <p class="project-description">Speed up + slow down audio, loop sections, split stems and more.</p>
+                    </div>
+                    <div class="project-year">2023 – present</div>
+                </div>
+
+                <div class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">Any Distance</h3>
+                        <p class="project-description">Workout tracker and story designer. 2023 D Design Award winner.</p>
+                    </div>
+                    <div class="project-year">2021 – present</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
