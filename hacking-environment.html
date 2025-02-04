@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacking Environment - Rofi Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-family: monospace;
+            font-size: 1.875rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: monospace;
+            text-transform: uppercase;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .content {
+            line-height: 1.6;
+        }
+
+        pre {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: monospace;
+        }
+
+        .explanation {
+            margin-top: 2rem;
+        }
+
+        .explanation h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #a3a3a3;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Hacking Environment</h1>
+        
+        <section>
+            <h2 class="section-title">Rofi Configuration</h2>
+            
+            <div class="content">
+                <p>This is a Rofi color theme based on the Gruvbox color scheme for Vim. Here's the configuration:</p>
+                
+                <pre><code>/* ==========================================================================
+   Rofi color theme
+
+   Based on the Gruvbox color scheme for Vim by morhetz
+   https://github.com/morhetz/gruvbox
+
+   File: gruvbox-dark-hard.rasi
+   Desc: Gruvbox dark (hard contrast) color theme for Rofi
+   Author: bardisty <b@bah.im>
+   Source: https://github.com/bardisty/gruvbox-rofi
+   Modified: Mon Feb 12 2018 06:04:26 PST -0800
+   ========================================================================== */
+
+* {
+    /* Theme settings */
+    highlight: bold italic;
+    scrollbar: true;
+
+    /* Gruvbox dark colors */
+    gruvbox-dark-bg0-hard:     #1D1D1D;
+    gruvbox-dark-bg0:          #282828;
+    gruvbox-dark-bg2:          #504945;
+    gruvbox-dark-fg0:          #fbf1c7;
+    gruvbox-dark-fg1:          #ebdbb2;
+    gruvbox-dark-red-dark:     #cc241d;
+    gruvbox-dark-red-light:    #fb4934;
+    gruvbox-dark-yellow-dark:  #FFFFFF;
+    gruvbox-dark-yellow-light: #DBDBDB;
+    gruvbox-dark-gray:         #a89984;
+
+    /* Theme colors */
+    background:                  #4E4E4E;
+    background-color:            #363636;
+    foreground:                  @gruvbox-dark-fg1;
+    border-color:                #070707;
+    separatorcolor:              #000000;
+    scrollbar-handle:            @border-color;
+
+    normal-background:           @background;
+    normal-foreground:           @foreground;
+    alternate-normal-background: @gruvbox-dark-bg0;
+    alternate-normal-foreground: @foreground;
+    selected-normal-background:  #070707;
+    selected-normal-foreground:  @gruvbox-dark-fg0;
+
+    active-background:           @gruvbox-dark-yellow-dark;
+    active-foreground:           @background;
+    alternate-active-background: @active-background;
+    alternate-active-foreground: @active-foreground;
+    selected-active-background:  @gruvbox-dark-yellow-light;
+    selected-active-foreground:  @active-foreground;
+
+    urgent-background:           @gruvbox-dark-red-dark;
+    urgent-foreground:           @background;
+    alternate-urgent-background: @urgent-background;
+    alternate-urgent-foreground: @urgent-foreground;
+    selected-urgent-background:  @gruvbox-dark-red-light;
+    selected-urgent-foreground:  @urgent-foreground;
+}
+
+@import "gruvbox-common.rasi"</code></pre>
+
+                <div class="explanation">
+                    <h3>Explanation of the Configuration:</h3>
+                    <ol>
+                        <li><strong>Theme Settings:</strong> The configuration starts by setting general theme properties like highlight style and enabling the scrollbar.</li>
+                        <li><strong>Color Definitions:</strong> It defines a set of colors based on the Gruvbox dark theme. These colors are used throughout the configuration.</li>
+                        <li><strong>Theme Colors:</strong> The main colors for the Rofi interface are set, including background, foreground, and border colors.</li>
+                        <li><strong>State-specific Colors:</strong> Colors for different states (normal, active, urgent) and their variations (alternate, selected) are defined.</li>
+                        <li><strong>Import:</strong> At the end, it imports a common Gruvbox configuration file, likely containing shared styles.</li>
+                    </ol>
+
+                    <h3>Key Color Choices:</h3>
+                    <ul>
+                        <li>Dark gray backgrounds (#4E4E4E, #363636) for a sleek, modern look.</li>
+                        <li>Light text colors (#fbf1c7, #ebdbb2) for readability against the dark background.</li>
+                        <li>Accent colors for active (#FFFFFF, #DBDBDB) and urgent (#cc241d, #fb4934) states to draw attention.</li>
+                        <li>Very dark selection color (#070707) to clearly highlight the current item.</li>
+                    </ul>
+
+                    <p>This configuration creates a dark, high-contrast theme for Rofi that's easy on the eyes and clearly highlights important elements.</p>
+                </div>
+            </div>
+        </section>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
