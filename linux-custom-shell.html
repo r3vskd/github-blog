@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Custom Shell - Neovim Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-family: monospace;
+            font-size: 1.875rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: monospace;
+            text-transform: uppercase;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .content {
+            line-height: 1.6;
+        }
+
+        pre {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .explanation {
+            margin-top: 2rem;
+        }
+
+        .explanation h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #a3a3a3;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Linux Custom Shell</h1>
+        
+        <section>
+            <h2 class="section-title">Neovim Configuration</h2>
+            
+            <div class="content">
+                <p>This is a custom Neovim configuration file. Here's the configuration with explanations:</p>
+                
+                <pre><code>syntax on
+:set nu
+:set clipboard+=unnamedplus
+
+" Some extra-settings
+set number
+" Filetype detection
+filetype plugin indent on
+" Syntax highlighting
+if !exists("g:syntax_on")|syntax enable|endif
+" Allow hidden buffers
+set hidden
+" Set soft maximum line length
+set tw=80
+" Make tabs smaller
+set tabstop=4 shiftwidth=4
+" Stops stupid hard line breaks. See |fo-table|
+set formatoptions=lcqjn
+" Shown through statusline
+set noshowmode
+" Sensible splits
+set splitright splitbelow
+" Show the command being typed
+set showcmd
+" Case insensitive search - Unless begins with uppercase
+set ignorecase smartcase
+" Hide formatting characters unless in current line or in insert or command mode
+set conceallevel=2 concealcursor=nc
+" Better command completion
+set wildmode=longest,list,full
+" Keep indentation after wrapping and don't break words
+set breakindent linebreak
+" Don't redraw during macros/register usage
+set lazyredraw
+" Enable folds but open them by default
+set foldenable foldlevelstart=10
+" Enable modelines
+set modeline
+" Lines to keep visible above/below, left/right of the cursor
+set scrolloff=10 sidescrolloff=5
+" Substituations can happen more than once per line by default
+set gdefault
+" Write a buffer when switching off of it
+set autowrite
+" These are neovim defaults on some terminals, set them for all
+" Enable changing cursor shape
+set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+" Use mouse
+set mouse=a
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+call plug#begin('~/.local/share/nvim/plugged')
+Plug 'ncm2/ncm2'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'majutsushi/tagbar'
+Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'freddiehaddad/feline.nvim'
+Plug 'seblj/nvim-tabline'
+Plug 'nvim-tree/nvim-web-devicons' 
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'Yggdroot/indentLine'
+Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/neco-syntax'  " Fuente general de auto completado
+Plug 'ervandew/supertab'
+Plug 'Shougo/echodoc.vim' " Muestra la firma de la función.
+Plug 'sheerun/vim-polyglot' " Colección de varios plugins de resaltado de sintaxis.
+Plug 'ryanoasis/vim-devicons'
+Plug 'Mofiqul/vscode.nvim'
+Plug 'SmiteshP/nvim-navic'
+Plug 'MunifTanjim/nougat.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
+Plug 'rcarriga/nvim-notify'
+Plug 'itchyny/lightline.vim'
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+call plug#end()
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" In your init.lua or init.vim
+set termguicolors
+lua << EOF
+require("bufferline").setup{}
+EOF
+
+" Nerdtree key mappings
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>:
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" Moving between tabs 
+nnoremap <C-y> :tabnew<CR>
+nnoremap <C-Left> :tabprevious<CR>                                                                            
+nnoremap <C-Right> :tabnext<CR>
+nnoremap <C-j> :tabprevious<CR>                                                                            
+nnoremap <C-k> :tabnext<CR>
+
+" Telescope mappings
+nnoremap <C-l> :Telescope find_files<CR>
+
+" Close tabs mapping  
+nnoremap <C-w> :q<CR>
+
+" Save file mapping 
+nnoremap <C-s> :w<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Invertir direccion de navegacion (de arriba a abajo) en el plugin supertab
+let g:SuperTabDefaultCompletionType = '<c-n>'
+
+set noshowmode  " No mostrar el modo actual (echodoc hace uso de este espacio)
+
+" Activar echodoc al iniciar Neovim
+let g:echodoc_enable_at_startup = 1
+
+" Don't showing specific buffers and files on indentLine plugin
+let g:indentLine_fileTypeExclude = ['text', 'sh', 'help', 'terminal']
+let g:indentLine_bufNameExclude = ['NERD_tree.*', 'term:.*']
+
+" Airline theme selector
+let g:airline_theme='distinguished'
+
+" Activar deoplete al iniciar Neovim
+let g:deoplete#enable_at_startup = 1
+
+" Showing lines of files
+let g:NERDTreeFileLines = 1
+
+" Start NERDTree when Vim is started without file arguments.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+
+autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
+
+" Cerrar automaticamente la ventana de vista previa (donde se muestra documentación, si existe)
+augroup deopleteCompleteDoneAu
+  autocmd!
+  autocmd CompleteDone * silent! pclose!
+augroup END</code></pre>
+
+                <div class="explanation">
+                    <h3>Explanation of the Configuration:</h3>
+                    
+                    <ol>
+                        <li><strong>Basic Settings:</strong>
+                            <ul>
+                                <li>Enables syntax highlighting and line numbers</li>
+                                <li>Sets up clipboard integration</li>
+                                <li>Configures various editor behaviors like tab size, line wrapping, and search options</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>Plugin Management:</strong>
+                            <ul>
+                                <li>Uses vim-plug to manage plugins</li>
+                                <li>Installs a wide range of plugins for enhanced functionality</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>Key Mappings:</strong>
+                            <ul>
+                                <li>Sets up custom key bindings for NERDTree, tab navigation, and common actions</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>Plugin-specific Configurations:</strong>
+                            <ul>
+                                <li>Configures various plugins like SuperTab, echodoc, indentLine, and Airline</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>Auto-commands:</strong>
+                            <ul>
+                                <li>Sets up automatic behaviors, like starting NERDTree when Vim opens without a file</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Enhanced code completion and syntax highlighting</li>
+                        <li>File tree navigation with NERDTree</li>
+                        <li>Improved status line with Airline</li>
+                        <li>Fuzzy file finding with FZF and Telescope</li>
+                        <li>Tab and buffer management</li>
+                        <li>Various quality-of-life improvements for editing and navigation</li>
+                    </ul>
+
+                    <p>This configuration creates a powerful development environment in Neovim, with features that enhance coding efficiency and provide a more IDE-like experience.</p>
+                </div>
+            </div>
+        </section>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
