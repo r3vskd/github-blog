@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTB Labs - Walkthrough Collection</title>
+    <title>Portfolio</title>
     <style>
         * {
             margin: 0;
@@ -37,13 +37,13 @@
             margin-bottom: 2rem;
         }
 
-        .walkthroughs {
+        .projects {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
 
-        .walkthrough {
+        .project {
             position: relative;
             display: flex;
             justify-content: space-between;
@@ -52,15 +52,17 @@
             margin: 0 -1rem;
             border-radius: 0.5rem;
             transition: background-color 0.2s;
+            text-decoration: none;
+            color: white;
         }
 
-        .walkthrough:hover {
+        .project:hover {
             background-color: rgba(255, 255, 255, 0.05);
             cursor: pointer;
         }
 
-        .walkthrough::after {
-            content: '';
+        .project::after {
+            /* content: ''; */
             position: absolute;
             left: 50%;
             top: 50%;
@@ -74,203 +76,91 @@
             pointer-events: none;
         }
 
-        .walkthrough:hover::after {
+        .project:hover::after {
             opacity: 1;
         }
 
-        .walkthrough-info {
+        .project-info {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
         }
 
-        .walkthrough-name {
+        .project-name {
             font-size: 1.125rem;
             font-weight: 500;
         }
 
-        .walkthrough-description {
+        .project-description {
             color: #a3a3a3;
             font-size: 0.875rem;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 2rem;
+        .project-year {
             color: #a3a3a3;
-            text-decoration: none;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            margin-left: 2rem;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .project {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .project-year {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="title">HTB Labs</h1>
+        <h1 class="title">R3VSKD</h1>
         
         <section>
-            <h2 class="section-title">Walkthrough Collection</h2>
+            <h2 class="section-title">Linux</h2>
             
-            <div class="walkthroughs">
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Broken Authentication Module</h3>
-                        <p class="walkthrough-description">Common authentication vulnerabilities and exploitation techniques.</p>
+            <div class="projects">
+                <a href="hacking-environment.html" class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">Hacking Environment</h3>
+                        <p class="project-description">bspwn, sxhkd, rofi, polybar, etc.</p>
                     </div>
-                </div>
+                    <div class="project-year">2025</div>
+                </a>
 
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">XSS Module</h3>
-                        <p class="walkthrough-description">Cross-Site Scripting vulnerabilities and mitigation strategies.</p>
+                <a href="linux-custom-shell.html" class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">Linux Custom Shell</h3>
+                        <p class="project-description">vimrc, zshrc, aliases, plugins, powerlevel10k, ohmyzsh.</p>
                     </div>
-                </div>
+                    <div class="project-year">2025</div>
+                </a>
 
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Web Service API Attacks Module</h3>
-                        <p class="walkthrough-description">Vulnerabilities in web service APIs and testing methodologies.</p>
+                <a href="bash-scripting.html" class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">Bash Scripting</h3>
+                        <p class="project-description">Some bAsH scripting Tools.</p>
                     </div>
-                </div>
+                    <div class="project-year">2025</div>
+                </a>
+                
+                <a href="htb-labs.html" class="project">
+                    <div class="project-info">
+                        <h3 class="project-name">HTB</h3>
+                        <p class="project-description">HTB walkthroughs.</p>
+                    </div>
+                    <div class="project-year">2025</div>
+                </a>
 
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Web Requests Module</h3>
-                        <p class="walkthrough-description">Fundamentals of HTTP requests and response manipulation.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Web Attacks Module</h3>
-                        <p class="walkthrough-description">Comprehensive coverage of various web application attacks.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Using Web Proxies Module</h3>
-                        <p class="walkthrough-description">Mastering web proxies for security testing and analysis.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Metasploit Framework Module</h3>
-                        <p class="walkthrough-description">Exploiting vulnerabilities using the Metasploit Framework.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">SQLMap Module</h3>
-                        <p class="walkthrough-description">Automated SQL injection and database takeover tool.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">SQL Injection Module</h3>
-                        <p class="walkthrough-description">Manual SQL injection techniques and payload crafting.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Session Security Module</h3>
-                        <p class="walkthrough-description">Session management vulnerabilities and secure implementations.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Server-Side Attacks Module</h3>
-                        <p class="walkthrough-description">Exploiting server-side vulnerabilities and misconfigurations.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Login Brute Force Module</h3>
-                        <p class="walkthrough-description">Techniques for brute-forcing login credentials.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">JavaScript Deobfuscation Module</h3>
-                        <p class="walkthrough-description">Techniques for deobfuscating JavaScript code.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Introduction to Web Applications Module</h3>
-                        <p class="walkthrough-description">Fundamentals of web application architecture and security.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Information Gathering Module</h3>
-                        <p class="walkthrough-description">OSINT and reconnaissance techniques for web applications.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">File Upload Attacks Module</h3>
-                        <p class="walkthrough-description">Exploiting vulnerabilities in file upload functionality.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">File Inclusion Module</h3>
-                        <p class="walkthrough-description">Local and Remote File Inclusion vulnerabilities and exploitation.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">FFuf Module</h3>
-                        <p class="walkthrough-description">Web fuzzing techniques using the FFuf tool.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Command Injections Module</h3>
-                        <p class="walkthrough-description">Identifying and exploiting command injection vulnerabilities.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">CBBH Module</h3>
-                        <p class="walkthrough-description">Preparation for the Certified Bug Bounty Hunter certification.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Bug Bounty Hunting Process</h3>
-                        <p class="walkthrough-description">End-to-end process of successful bug bounty hunting.</p>
-                    </div>
-                </div>
-
-                <div class="walkthrough">
-                    <div class="walkthrough-info">
-                        <h3 class="walkthrough-name">Web Application Security Module</h3>
-                        <p class="walkthrough-description">Comprehensive overview of web application security practices.</p>
-                    </div>
-                </div>
             </div>
         </section>
-
-        <a href="index.html" class="back-link">← Back to Home</a>
     </div>
 </body>
 </html>
