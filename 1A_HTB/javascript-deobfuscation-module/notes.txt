@@ -1,0 +1,49 @@
+java deob
+================
+Obfuscation is a technique used to make a script more difficult to read by humans
+
+https://beautifytools.com/javascript-obfuscator.php
+https://www.toptal.com/developers/javascript-minifier
+https://jsconsole.com/                                 <---  verify that it still performs its original function
+https://obfuscator.io/                                 <--- generate even more obfuscated code
+https://jsfuck.com/
+https://utf-8.jp/public/jjencode.html
+https://utf-8.jp/public/aaencode.html
+
+http://www.jsnice.org/
+https://prettier.io/playground/
+https://beautifier.io/
+
+https://obf-io.deobfuscate.io/
+https://deobfuscate.relative.im/
+
+-----------------------------
+- always check the source code and search for files (js, php, xml, etc)
+- 3 of the most commonly used text encoding methods:
+   - base64
+   - hex
+   - rot13
+
+-----------------------------
+add the "-s" flag to reduce cluttering the response with unnecessary data:
+curl -s http://SERVER_IP:PORT/ -X POST
+curl -s http://SERVER_IP:PORT/ -X POST -d "param1=sample"
+-----------------------------
+Base64 encode:
+echo https://www.hackthebox.eu/ | base64
+Base64 decode:
+echo https://www.hackthebox.eu/ | base64 -d
+
+hex encode:
+echo https://www.hackthebox.eu/ | xxd -p
+hex decode:
+echo https://www.hackthebox.eu/ | xxd -p -r
+
+rot13 encode:
+echo https://www.hackthebox.eu/ | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+rot13 decode:
+echo uggcf://jjj.unpxgurobk.rh/ | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+-----------------------------
+https://infosecwriteups.com/solving-the-javascript-deobfuscation-htb-ctf-challenge-b7054e9d6ce9
+
+

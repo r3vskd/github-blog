@@ -1,0 +1,16 @@
+https://www.invicti.com/blog/web-security/json-web-token-jwt-attacks-vulnerabilities/
+
+https://portswigger.net/web-security/jwt
+
+https://hackerone.com/reports/1661113
+
+https://hackerone.com/reports/1051373
+========================
+https://medium.com/swlh/hacking-json-web-tokens-jwts-9122efe91e4a
+
+https://book.hacktricks.xyz/pentesting-web/hacking-jwt-json-web-tokens
+
+https://github.com/ticarpi/jwt_tool
+
+https://jwt.io/
+

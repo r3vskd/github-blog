@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTB Labs - Authentication and Security Walkthrough</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-family: monospace;
+            font-size: 1.875rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: monospace;
+            text-transform: uppercase;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .content {
+            line-height: 1.6;
+        }
+
+        h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #a3a3a3;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Broken authentication module </h1>
+        
+        <section>
+            <h2 class="section-title"><a href="broken-auth-mod.html">Authentication and Security Walkthrough</a>Authentication and Security Walkthrough</h2>
+            
+            <div class="content">
+                <h3>Introduction to Authentication</h3>
+                <p>Authentication is the first line of defense against unauthorized access in web applications. The most common method used is login forms. It's crucial to understand that while authentication verifies identity, authorization determines what an authenticated user can access or do.</p>
+
+                <h3>Authentication Methods</h3>
+                <h4>Multi-Factor Authentication (MFA/2FA)</h4>
+                <p>MFA uses multiple factors for verification:</p>
+                <ul>
+                    <li>Something the user knows (e.g., password)</li>
+                    <li>Something the user has (e.g., hardware token)</li>
+                    <li>Something the user is (e.g., biometric data)</li>
+                </ul>
+
+                <h4>Form-Based Authentication (FBA)</h4>
+                <p>FBA is the most common method for web apps. It can involve multiple steps, including:</p>
+                <ol>
+                    <li>Entering a username</li>
+                    <li>Entering a password</li>
+                    <li>Providing a one-time password (OTP)</li>
+                </ol>
+                <p>OTPs are typically valid for a short time and a single login attempt.</p>
+
+                <h4>HTTP-Based Authentication</h4>
+                <p>This method includes authentication data in every request's Authorization header. While convenient, it can be less secure than FBA as credentials are sent with each request.</p>
+
+                <h3>Default Credentials</h3>
+                <p>Always check for default credentials, especially for specific software or systems. For example:</p>
+                <pre><code>ADVANTECH:
+1. admin:admin
+2. advantech:admin
+3. root:00000000
+
+CISCO:
+1. cisco:cisco
+2. admin:(blank)
+3. tech:router</code></pre>
+
+                <h3>Security Measures</h3>
+                <h4>Rate Limiting</h4>
+                <p>Implement rate limiting on login attempts to prevent brute-force attacks.</p>
+
+                <h4>Header Manipulation</h4>
+                <p>Be aware of header manipulation techniques, such as using X-Forwarded-For to bypass IP-based restrictions:</p>
+                <pre><code>headers = {
+  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
+  "X-Forwarded-For": "1.2.3.4"
+}</code></pre>
+
+                <h3>Brute Force Techniques</h3>
+                <h4>Username Enumeration</h4>
+                <p>Use tools like Burp Suite's Intruder to brute force usernames. Look for differences in response length or specific strings in the HTML response.</p>
+
+                <h4>Password Brute Forcing</h4>
+                <p>Use grep and wc commands to create targeted wordlists:</p>
+                <pre><code>grep '[[:upper:]]' wordlist.txt | grep '[[:lower:]]' | grep -E '^.{8,12}$'
+grep '[[:upper:]]' wordlist.txt | grep '[[:digit:]]'
+wc -l wordlist.txt</code></pre>
+
+                <h3>Token-Based Attacks</h3>
+                <h4>Predictable Reset Tokens</h4>
+                <p>Use tools like wfuzz for token attacks:</p>
+                <pre><code>wfuzz -z range,00000-99999</code></pre>
+
+                <h4>Token Manipulation</h4>
+                <p>Decode and manipulate tokens using tools like CyberChef. For example, modifying a base64 encoded token to escalate privileges.</p>
+
+                <h3>Cookie-Based Attacks</h3>
+                <p>Analyze and manipulate cookies, especially those used for session management or "remember me" functionality. Use tools like CyberChef for decoding and Burp Suite for manipulation.</p>
+
+                <h3>JWT (JSON Web Tokens)</h3>
+                <p>Understand the structure and potential vulnerabilities of JWTs, especially in Single Sign-On (SSO) implementations. Be cautious of tokens that never expire, as they can lead to session fixation attacks.</p>
+
+                <h3>Conclusion</h3>
+                <p>Authentication and authorization are critical aspects of web application security. Always consider multiple attack vectors and use a combination of tools and techniques for thorough testing.</p>
+            </div>      
+        </section>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

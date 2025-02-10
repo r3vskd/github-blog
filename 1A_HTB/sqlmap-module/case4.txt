@@ -1,0 +1,14 @@
+POST /case4.php HTTP/1.1
+Host: 167.71.135.36:30381
+Content-Length: 8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Sec-GPC: 1
+Accept-Language: en-US,en
+Origin: http://167.71.135.36:30381
+Referer: http://167.71.135.36:30381/case4.php
+Accept-Encoding: gzip, deflate
+Connection: close
+
+{"id":1}

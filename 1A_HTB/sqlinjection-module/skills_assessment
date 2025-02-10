@@ -1,0 +1,19 @@
+-Try to read files you know to find a location you can write to.
+-remote code execution
+- flag in / root directory
+
+          [dashboard.php]
+====================================
+|                                  |
+| $(function(){                    |
+|    $('#keywords').tablesorter(); |
+| });                              |
+|                                  |
+====================================
+
+
+information_schema	utf8	utf8_general_ci	
+mysql	utf8mb4	utf8mb4_general_ci	
+performance_schema	utf8	utf8_general_ci	
+backup	utf8mb4	utf8mb4_general_ci	
+ilfreight	utf8mb4	utf8mb4_general_ci

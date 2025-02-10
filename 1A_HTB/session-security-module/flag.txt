@@ -1,0 +1,1 @@
+"5440","18.644235292","192.168.0.17","93.184.216.34","HTTP","579","GET /?redirect_uri=/complete.html&token=FLAG{SUCCESS_YOU_PWN3D_US_H0PE_YOU_ENJ0YED} HTTP/1.1 "

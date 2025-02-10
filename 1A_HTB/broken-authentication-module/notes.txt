@@ -1,0 +1,183 @@
+- the most widespread authentication method used in web applications is login forms.
+- authentication is the most widespread security measure, and is the first line of defense against unauthorized.
+- authorization is defined as the process of approving or disapproving a request from a given (unauthenticated) entity
+=====================================================================
+Metodos de autenticacion:
+
+-> multi-factor authentication:
+   MFA or 2FA:
+   factors are separated into three different domains:
+   -something the user knows, for example a password or username.
+   -something the user has, like hardware token.
+   -something the user ir, usually a biometric fingerprint.
+
+-> Form-Based Authentication:
+   -or FBA is the most common authentication method, for web apps.
+   -For example, the first step require entring the username, the second the password, and the third a one-time password(OTP token)
+ An OTP token can originate from a hardware device or mobile application that generates passwords. one time passwords ussually last for alimited amount of time, for example, 30 seconds, and are valid for a single login attempt, hence the name one-time.
+
+
+->  HTTP Based authentication:
+    When using HTTP-based authentication, the Authorization header holds the authentication data and should be present in every request for the user to be authenticated.
+
+    the abovementioned authentication methods could be less secure than FBA because every request contains authentication data. For example, to perform an HTTP basic auth login, the browser encodes the username and password using base64. The Authorization header will contain the base64-encoded credentials in every request.
+
+GET /basic_auth.php HTTP/1.1
+Host: brokenauth.hackthebox.eu
+Cache-Control: max-age=0
+Authorization: Basic YWRtaW46czNjdXIzcDQ1NQ==
+
+================================================
+1- check on google for default credentials by customer, example: empty: WebAccess HMI/SCADA Software
+   (it depends of the website customer)
+
+
+SOME DEFAULT CREDENTIALS:
+---------------------------------
+ADVANTECH:
+
+#	Username	Password
+______________________________________
+1	admin	        admin
+2	advantech	admin
+3	root	        00000000
+4	Admin	        00000000
+5	admin	        (blank)
+6	00000000
+7        advantech	admin
+8        admin	admin
+9        admiN	(blank)
+10        00000000	
+11        root	00000000
+12        Admin	00000000
+______________________________________
+---------------------------------
+CISCO:
+
+empty:Cisco
+cisco:cisco
+Cisco:Cisco
+cisco:router
+tech:router
+===================================================================
+rate limiting in login attempts
+====================================================================
+headers manipulation to get the flag, crafting a X-forwareded-for in burpsuite
+
+headers = {
+  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
+  "X-Forwarded-For": "1.2.3.4"
+}
+X-Forwarded-For: 127.0.0.1
+====================================================================
+brute forcing usernames
+
+-use the intruder of burp to bruteforcing with a wordlists in usernames folder on seclists 
+
+-pay attention to length column at the intruder attack window in burpsuite, the one that had a different length number is the flag
+
+-always check for "validuser" strings in html response page, in bupsuite, like:
+
+        <div class="form-group">
+            <input name="Username" type="text" class="form-control" placeholder="Username" required="required">
+<input type="hidden" name="validuser" value="ansible"><input type="hidden" name="count" value="1">        </div>
+--------------------------------------------------------------------------------------------------------
+when you have been already try and try to find a valid response from intruder and get everything the same
+(statuscode, timeout, length, etc) look at response header, put response header in order from big to small and on of the top numbers they will be very different from the rest, on of that probabbly i the answer, because timing vulnerability, one takes more time than the others.
+
+========================================================================
+BRUTE FORCING PASSWORDS
+
+--------------------------------------
+some grep and wc commands:
+
+grep '[[:upper:]]' /home/l4b/Downloads/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou-50.txt | grep '[[:lower:]]' | grep -E '^.{8,12}$'
+--------------------------------------
+grep '[[:upper:]]' /home/l4b/Downloads/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou-50.txt | grep '[[:digit:]]'
+--------------------------------------
+wc -l /home/l4b/Downloads/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou-50.txt
+--------------------------------------
+tambien usar el burpsuite intruder para hacer brute forcing a contrasenas pero no olvidar usar:
+
+-crear wordlists con wc -l, grep, etc, copiarlas y pegarlas en payload settings en el intruder
+
+TENER EN CUENTA LOS SIGUIENTES AJUSTES A  LA HORA DE USAR EL UNTRUDER:
+
+-resource pool para crear delays entre cada intento
+-rate limit bypass
+-maximum concurrent requests 
+-delay between requests (en milisigundos)
+--------------------------------------
+=====================================================
+PREDICTABLE RESET TOKEN:
+
+- use wfuzz -z range,00000-99999 for token attacks
+
+technique 2:
+
+https://gchq.github.io/CyberChef/
+
+1- we have a login panel and forgot password option below.
+2- so we click con "forgot password?" button.
+3- next, show temporary password for htbuser
+4- now we have a base64 encoded string
+5- open cyberchef and paste the encoded password
+6- click two times on the button next to "output" to apply convert from hex
+7- so we have; "htbuser:htbuser@academy.hackthebox.eu:unbreakable"
+8- now we have to chage it to: "htbadmin:htbadmin@academy.hackthebox.eu:unbreakable"
+9- paste "htbadmin:htbadmin@academy.hackthebox.eu:unbreakable" in burupsuite decoder and encode as ascii hex and encode again as base64.
+10- we need to go to the login page and login as user: htbadmin and password using the final encoded string
+11- DONE
+
+=====================================================
+AUTHENTICATION CREDENTIALS HANDLING
+
+users who forget their password can get a new one in three ways when no external authentication factor is used:
+
+1- By requesting a new one that will be sent via email by the application
+2- By requesting a URL that will allow them to set a new one
+3- By answering prefilled questions as proof of identity and then setting a new one
+=======================================================
+GUESSABLE ANSWERS
+when the site request guessable answers user wordlist by searching on google and combine that to boost the probability
+-clean the grep match area on the intruder
+-and select correctly the string to search
+https://github.com/imsky/wordlists/tree/master
+=======================================================
+USERNAME INJECTION
+
+1- login normally
+2- tha webite we take us to reset password link, so we fill the fields while burpsuite proxy is back
+3- add userid=htbadmin& before oldpasswd=htbuser&newpasswd=test&confirm=test&submit=doreset
+4- use the new password to gain login access
+=======================================================
+BRUTE FORCING COOKIES
+
+- Magic bytes are 1F 8B, a quick search on Wikipedia’s file signatures page indicates that it could be a gzipped text
+
+- in the request headers when the value "cookie: SESSIONID=" is actively using base64 or hex or both at the same time decrypt it using cyberchef and manipulate it back to get the flag with the burpsuite decoder.
+("super" value as role can help)
+
+- user:teacher;role:super;time:1690918403
+
+- rememberme option, is a token inside the "cookie" value but the variable is named as: "PERSISTENT" or similar
+
+- so we need to do the same, paste the encoded value of "PERSISTENT" that refer to the rememberme option cookie, (paste this in bupsuite decoder)
+
+- click con smart decode to bypass the % symbols
+
+- paste the smart decoded on cyberchef applying, from base64 and Zlib inlfate and get the string in readable plain text
+
+- now we need to modify the values like normally we do, by adding "role:super"
+
+- now encode it back again, by selecting in cyberchef first, zlib deflate, and next, to base64 
+
+- copy and paste in buprsuite request cookie value and get the flag
+==========================
+INSECURE TOKE  HANDLING
+
+- One difference between cookies and tokens is that cookies are used to send and store arbitrary data, while tokens are explicitly used to send authorization data. 
+
+- A typical use case for JWT is continuous authentication for Single Sign-On (SSO). However, JWT can be used flexibly for any field where compact, signed, and encrypted information
+
+- If a token never expires, the Session Fixation attack discussed below is even worse

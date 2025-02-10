@@ -1,0 +1,46 @@
+=====================================
+True love is tough, and even harder to find. Once the sun has set, the lights close and the bell has rung... you find yourself licking your wounds and contemplating human existence. You wish to have somebody important in your life to share the experiences that come with it, the good and the bad. This is why we made LoveTok, the brand new service that accurately predicts in the threshold of milliseconds when love will come knockin' (at your door). Come and check it out, but don't try to cheat love because love cheats back. 
+=====================================
+1- by using the intruder i noticed that the parapameter "?format=" are allowing values and ill trying to get a xss valid response, 
+  - test numbers at format=[key] 
+  - test letters at format=[key]
+  - test xss payloads at format=[key]
+  - by testing a wordlist with 0-1000 i noticed that 1 to 12 will show the month and the counter as a date and from 32 onwards only show 1st january
+  - from 13 to 31 only show the number, so possibly este ignorando/escapando del codigo, asi que podria ejecutar algo en paralelo usando un numero de 13-31
+  - 13 y 31 solo cambian de posicion, otra opcion seria que haya algun error en la posicion del 1 y del 3 
+  - a partir de 32 en adelante solo muestra la fecha como el 1ro de enero
+=====================================
+nginx
+
+Font scripts
+
+Google Font API
+
+Font Awesome
+5.15.2
+Web servers
+
+Nginx
+CDN
+
+Cloudflare
+
+cdnjs
+JavaScript libraries
+
+Moment.js
+2.29.1
+Reverse proxies
+
+Nginx
+UI frameworks
+
+Bootstrap
+
+
+===================================
+archivos por leer que si pueden funcionar:
+
+/home/l4b/Downloads/2L_HTB/CBBH_prep/lovetok/web_lovetok/challenge/index.php
+/home/l4b/Downloads/2L_HTB/CBBH_prep/lovetok/web_lovetok/challenge/Router.php
+/home/l4b/Downloads/2L_HTB/CBBH_prep/lovetok/web_lovetok/challenge/controllers/TimeController.php

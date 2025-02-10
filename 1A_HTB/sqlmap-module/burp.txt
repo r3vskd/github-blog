@@ -1,0 +1,14 @@
+POST /action.php HTTP/1.1
+Host: 134.209.23.184:30536
+Content-Length: 8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Sec-GPC: 1
+Accept-Language: en-US,en
+Origin: http://134.209.23.184:30536
+Referer: http://134.209.23.184:30536/shop.html
+Accept-Encoding: gzip, deflate
+Connection: close
+
+{"id":1}

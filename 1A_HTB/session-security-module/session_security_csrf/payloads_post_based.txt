@@ -1,0 +1,5 @@
+la respuesta a:
+ If csrf.htb.net was utilizing secure cookies, would an attacker still be able to leak Julie Roger's CSRF token?
+ es si porque aunque este segura la cooke o este encriptada en lo que quieran, vamos a poder siguir viendola y
+ seguir accediendo a ella mediante la url o inpect code
+

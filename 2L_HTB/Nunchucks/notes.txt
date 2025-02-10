@@ -1,0 +1,59 @@
+wappa:
+-----------------
+Font scripts
+
+Google Font API
+Web frameworks
+
+Express
+Web servers
+
+Nginx
+1.18.0
+
+Express
+Programming languages
+
+Node.js
+Operating systems
+
+Ubuntu
+JavaScript libraries
+
+Swiper
+
+jQuery
+3.5.1
+Reverse proxies
+
+Nginx
+1.18.0
+UI frameworks
+
+Bootstrap
+4.6.0
+
+------------------------------
+|                            |
+|            UTILS           |
+|                            |
+------------------------------
+https://github.com/Hackmanit/TInjA
+https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection#detect
+https://www.npmjs.com/package/twing
+https://disse.cting.org/2016/08/02/2016-08-02-sandbox-break-out-nunjucks-template-engine
+https://github.com/mozilla/nunjucks?tab=readme-ov-file
+https://medium.com/@joemcfarland/hack-the-box-nunchucks-writeup-f6eef36a8363
+
+
+
+
+
+
+
+
+
+
+
+
+

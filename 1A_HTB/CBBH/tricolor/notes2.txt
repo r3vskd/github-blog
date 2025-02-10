@@ -1,0 +1,16 @@
+https://refabr1k.gitbook.io/oscp/exploitation-1/php-rce
+https://refabr1k.gitbook.io/oscp/web/xss
+https://www.revshells.com/
+https://dev.to/mxglt/how-to-execute-shell-commands-in-javascript-123b
+https://tex2e.github.io/reverse-shell-generator/index.html
+https://www.acunetix.com/blog/articles/web-shells-101-using-php-introduction-web-shells-part-2/
+https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting/dom-xss#local-file-path-manipulation
+https://codebeautify.org/jsviewer
+https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection?source=post_page-----c72c797aaba3--------------------------------#xss-in-js-context
+https://chat.openai.com/c/53cf2d60-eda9-4224-b7b1-757552587354
+
+
+
+checo for:
+Login Form Injection
+

